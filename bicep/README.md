@@ -105,6 +105,8 @@ Your results should look something like this.
 
 7. Assign RBAC permissions to AKS
 
+You need to grant the managed identity of AKS access to your Azure Container Registry so it can pull images. Run the following command.
+
 ```
 az aks update -n aks-dapr-ussc-demo -g rg-dapr-workshop-ussc-demo --attach-acr crdaprusscdemo
 ```

@@ -257,14 +257,22 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
 1. Navigate to the src/VehicleRegistrationService directory.
 
 ```
-az acr build --registry crdaprusscdemo --image vehicleregistrationservice:v1 .
+az acr build --registry crdaprusscdemo --image vehicleregistrationservice:latest .
 ```
 
-2. Deploy the VehicleRegistrationService image to the Azure Kubernetes Service.
+2. Deploy the VehicleRegistrationService image to the Azure Kubernetes Service. You will need to open this file and 
+change the "ingress.hosts[0].host" and "image.repository" to match your deployed Azure resources.
 
 ```
 kubectl apply -f ./deploy/deploy.yaml
 ```
+
+TODO: Fix this by running a Helm chart where you pass in the names of the YAML keys. This is currently broken because the substitution of the
+ingress.hosts[0].host breaks the generation of the subsequent paths.
+```
+//helm template ./deploy/vehicleregistrationservice --set ingress.hosts[0].host=vehicleregistrationservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io,image.repository=crdaprusscdemo.azurecr.io/vehicleregistrationservice --debug
+```
+
 
 ## Next assignment
 
