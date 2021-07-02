@@ -250,6 +250,22 @@ So how can you check whether or not the call to the VehicleRegistrationService i
 
    ![](img/zipkin-dependencies.gif)
 
+## Step 5: Deploy to Azure Kubernetes Service
+
+Use Azure Container Registry Tasks to have the Azure Container Registry build & store your container image.
+
+1. Navigate to the src/VehicleRegistrationService directory.
+
+```
+az acr build --registry crdaprusscdemo --image vehicleregistrationservice:v1 .
+```
+
+2. Deploy the VehicleRegistrationService image to the Azure Kubernetes Service.
+
+```
+kubectl apply -f ./deploy/deploy.yaml
+```
+
 ## Next assignment
 
 Congratulations! You have successfully completed assignment 2.

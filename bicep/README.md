@@ -103,4 +103,10 @@ Your results should look something like this.
   dapr-placement-server  dapr-system  True     Running  1         1.2.2    1m   2021-07-02 08:45.45
 ```
 
+7. Assign RBAC permissions to AKS
+
+```
+az aks update -n aks-dapr-ussc-demo -g rg-dapr-workshop-ussc-demo --attach-acr crdaprusscdemo
+```
+
 ## GitHub Actions

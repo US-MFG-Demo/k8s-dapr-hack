@@ -1,0 +1,43 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: vehicleregistrationservice 
+  labels:
+    app: vehicleregistrationservice
+spec:
+  selector:
+    app: vehicleregistrationservice
+  ports:
+  - protocol: TCP
+    port: 6002
+    targetPort: 3602
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vehicleregistrationservice
+  labels:
+    app: vehicleregistrationservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vehicleregistrationservice
+  template:
+    metadata:
+      labels:
+        app: vehicleregistrationservice
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "vehicleregistrationservice"
+        dapr.io/app-port: "3602"
+        dapr.io/log-level: "debug"
+    spec:
+      containers:
+      - name: vehicleregistrationservice
+        image: crdaprusscdemo.azurecr.io/vehicleregistrationservice:latest
+        ports:
+        - containerPort: 6002
+        imagePullPolicy: Always
