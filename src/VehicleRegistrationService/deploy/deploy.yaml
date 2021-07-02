@@ -9,7 +9,7 @@ spec:
     app: vehicleregistrationservice
   ports:
   - protocol: TCP
-    port: 6002
+    port: 3602
     targetPort: 3602
   type: LoadBalancer
 
@@ -32,8 +32,12 @@ spec:
       annotations:
         dapr.io/enabled: "true"
         dapr.io/app-id: "vehicleregistrationservice"
-        dapr.io/app-port: "3602"
+        dapr.io/app-port: "6002"
         dapr.io/log-level: "debug"
+        dapr.io/sidecar-cpu-request: "100m"
+        dapr.io/sidecar-memory-request: "250Mi"
+        dapr.io/sidecar-cpu-limit: "300m"
+        dapr.io/sidecar-memory-limit: "1000Mi"
     spec:
       containers:
       - name: vehicleregistrationservice
@@ -41,3 +45,26 @@ spec:
         ports:
         - containerPort: 6002
         imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 1000m
+            memory: 200Mi
+        livenessProbe:
+          httpGet:
+            path: v1.0/healthz
+            port: 3500
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds : 5
+          failureThreshold : 3
+        readinessProbe:
+          httpGet:
+            path: v1.0/healthz
+            port: 3500
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds : 5
+          failureThreshold: 3
