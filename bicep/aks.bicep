@@ -2,6 +2,11 @@ param longName string
 param adminUsername string
 param publicSSHKey string
 
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+  name: 'la-${longName}'
+  location: resourceGroup().location  
+}
+
 resource aks 'Microsoft.ContainerService/managedClusters@2021-03-01' = {
   name: 'aks-${longName}'
   location: resourceGroup().location
@@ -34,9 +39,16 @@ resource aks 'Microsoft.ContainerService/managedClusters@2021-03-01' = {
       httpApplicationRouting: {
         enabled: true
       }
+      omsagent: {
+        enabled: true
+        config: {
+          logAnalyticsWorkspaceResourceID: logAnalytics.id
+        }
+      }
     }
   }
 }
 
 output aksName string = aks.name
-output controlPlaneFQDN string = aks.properties.fqdn
+output aksControlPlaneFQDN string = aks.properties.fqdn
+output logAnalyticsName string = logAnalytics.name

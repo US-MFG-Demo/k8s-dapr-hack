@@ -52,6 +52,7 @@ module redisCacheModule 'redisCache.bicep' = {
 
 output serviceBusName string = serviceBusModule.outputs.serviceBusName
 output redisCacheName string = redisCacheModule.outputs.redisCacheName
+output redisCachePrimaryAccessKey string = redisCacheModule.outputs.redisCachePrimaryAccessKey
 output keyVaultName string = keyVaultModule.outputs.keyVaultName
 output logicAppName string = logicAppModule.outputs.logicAppName
 output containerRegistryName string = containerRegistryModule.outputs.containerRegistryName
