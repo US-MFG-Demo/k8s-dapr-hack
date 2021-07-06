@@ -260,17 +260,16 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
 az acr build --registry crdaprusscdemo --image vehicleregistrationservice:latest .
 ```
 
-2. Deploy the VehicleRegistrationService image to the Azure Kubernetes Service. You will need to open this file and 
-change the "ingress.hosts[0].host" and "image.repository" to match your deployed Azure resources.
+2. Deploy the VehicleRegistrationService image to the Azure Kubernetes Service. You will need to get the DNS name and 
+Azure Container Registry login server/repository:tag name to match your deployed Azure resources. Use these to replace the
+"Ingress.spec.rules.host" and the "Deployment.spec.template.spec.containers.image" in the ./deploy/deploy.yaml file before running the "apply" command.
 
 ```
+//helm template ./deploy/vehicleregistrationservice `
+//--set ingress.rules[0].host=vehicleregistrationservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io `
+//--set image.repository=crdaprusscdemo.azurecr.io/vehicleregistrationservice
+
 kubectl apply -f ./deploy/deploy.yaml
-```
-
-TODO: Fix this by running a Helm chart where you pass in the names of the YAML keys. This is currently broken because the substitution of the
-ingress.hosts[0].host breaks the generation of the subsequent paths.
-```
-//helm template ./deploy/vehicleregistrationservice --set ingress.hosts[0].host=vehicleregistrationservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io,image.repository=crdaprusscdemo.azurecr.io/vehicleregistrationservice --debug
 ```
 
 
