@@ -268,6 +268,7 @@ Azure Container Registry login server/repository:tag name to match your deployed
 kubectl apply -f ./deploy/deploy.yaml
 ```
 
+3. Repeat these steps for the FineCollectionService & the TrafficControlService.
 
 ## Next assignment
 
