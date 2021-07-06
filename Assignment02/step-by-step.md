@@ -265,10 +265,6 @@ Azure Container Registry login server/repository:tag name to match your deployed
 "Ingress.spec.rules.host" and the "Deployment.spec.template.spec.containers.image" in the ./deploy/deploy.yaml file before running the "apply" command.
 
 ```
-//helm template ./deploy/vehicleregistrationservice `
-//--set ingress.rules[0].host=vehicleregistrationservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io `
-//--set image.repository=crdaprusscdemo.azurecr.io/vehicleregistrationservice
-
 kubectl apply -f ./deploy/deploy.yaml
 ```
 
