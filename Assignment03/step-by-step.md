@@ -541,6 +541,24 @@ https://docs.dapr.io/reference/components-reference/supported-pubsub/setup-azure
 As you complete this assignment, hopefully you see  The *value proposition* of Dapr. By providing infrastructure plumbing, it dramatically simplifies your application. Equally important, you can plug in any pre-defined component without having to 
 change your application code.
 
+<<<<<<< HEAD
+=======
+## Step 9: Deploy to Azure Kubernetes Service
+
+Use Azure Container Registry Tasks to have the Azure Container Registry build & store your container image.
+
+1. Navigate to the src/TrafficControlService directory & use a Azure Container Registry task to build your image from source. **Note the change in image tag**
+
+```
+az acr build --registry crdaprusscdemo --image vehicleregistrationservice:assignment03 .
+```
+
+2. Deploy the TrafficControLService image to the Azure Kubernetes Service. You will need to **change the image tag** that will get deployed in the deploy.yaml file.
+
+```
+kubectl apply -f ./deploy/deploy.yaml
+
+>>>>>>> jordanbean/k8s
 ## Next assignment
 
 Congratulations, you've now completed assignment 3.
