@@ -541,8 +541,6 @@ https://docs.dapr.io/reference/components-reference/supported-pubsub/setup-azure
 As you complete this assignment, hopefully you see  The *value proposition* of Dapr. By providing infrastructure plumbing, it dramatically simplifies your application. Equally important, you can plug in any pre-defined component without having to 
 change your application code.
 
-<<<<<<< HEAD
-=======
 ## Step 9: Deploy to Azure Kubernetes Service
 
 Use Azure Container Registry Tasks to have the Azure Container Registry build & store your container image.
@@ -558,7 +556,6 @@ az acr build --registry crdaprusscdemo --image vehicleregistrationservice:assign
 ```
 kubectl apply -f ./deploy/deploy.yaml
 
->>>>>>> jordanbean/k8s
 ## Next assignment
 
 Congratulations, you've now completed assignment 3.
