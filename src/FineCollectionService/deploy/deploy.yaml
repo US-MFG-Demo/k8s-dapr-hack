@@ -88,3 +88,4 @@ spec:
             name: finecollectionservice
             port: 
               number: 80
+              

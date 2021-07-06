@@ -88,3 +88,4 @@ spec:
             name: vehicleregistrationservice
             port: 
               number: 80
+              
