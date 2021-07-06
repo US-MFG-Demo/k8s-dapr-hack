@@ -270,6 +270,15 @@ kubectl apply -f ./deploy/deploy.yaml
 
 3. Repeat these steps for the FineCollectionService & the TrafficControlService.
 
+4. Modify the src/Simulation/Proxies/HttpTrafficControlService.cs file to use the new URLs for your AKS hosted application.
+
+Example:
+
+```
+_httpClient.PostAsync("http://trafficcontrolservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io/v1.0/invoke/trafficcontrolservice/method/entrycam", message).Wait();
+
+```
+
 ## Next assignment
 
 Congratulations! You have successfully completed assignment 2.
