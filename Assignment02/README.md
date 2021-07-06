@@ -51,4 +51,4 @@ To leverage step-by-step instructions to achieve the goals, open the [step-by-st
 
 Once you've finished this assignment, stop all the running processes and close all the terminal windows in VS Code. Now proceed to the next assignment.
 
-Go to [assignment 3](../Assignment03/README.md).
+Go to [assignment 2A](../Assignment02A/README.md).
