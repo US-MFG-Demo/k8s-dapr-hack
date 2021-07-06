@@ -254,15 +254,16 @@ So how can you check whether or not the call to the VehicleRegistrationService i
 
 Use Azure Container Registry Tasks to have the Azure Container Registry build & store your container image.
 
-1. Navigate to the src/VehicleRegistrationService directory.
+1. Navigate to the src/VehicleRegistrationService directory & use a Azure Container Registry task to build your image from source.
 
 ```
-az acr build --registry crdaprusscdemo --image vehicleregistrationservice:latest .
+az acr build --registry crdaprusscdemo --image vehicleregistrationservice:assignment02 .
 ```
 
-2. Deploy the VehicleRegistrationService image to the Azure Kubernetes Service. You will need to get the DNS name and 
-Azure Container Registry login server/repository:tag name to match your deployed Azure resources. Use these to replace the
-"Ingress.spec.rules.host" and the "Deployment.spec.template.spec.containers.image" in the ./deploy/deploy.yaml file before running the "apply" command.
+2. Deploy the VehicleRegistrationService image to the Azure Kubernetes Service. You will need to get the DNS name (found in the
+new resource group that AKS auto-generated, look for a resource group that starts with "MC_") and Azure Container Registry 
+login server/repository:tag name to match your deployed Azure resources. Use these to replace the "Ingress.spec.rules.host" and the 
+"Deployment.spec.template.spec.containers.image" in the ./deploy/deploy.yaml file before running the "apply" command.
 
 ```
 kubectl apply -f ./deploy/deploy.yaml

@@ -14,7 +14,7 @@ resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-01-01-preview' = {
 }
 
 resource serviceBusTrafficControlTopic 'Microsoft.ServiceBus/namespaces/topics@2017-04-01' = {
-  name: '${serviceBus.name}/trafficcontrol'
+  name: '${serviceBus.name}/collectfine'
 }
 
 output serviceBusName string = serviceBus.name
