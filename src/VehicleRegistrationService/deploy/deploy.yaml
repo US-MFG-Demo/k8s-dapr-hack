@@ -38,10 +38,11 @@ spec:
         dapr.io/sidecar-memory-request: "250Mi"
         dapr.io/sidecar-cpu-limit: "300m"
         dapr.io/sidecar-memory-limit: "1000Mi"
+        dapr.io/config: "zipkin"
     spec:
       containers:
       - name: vehicleregistrationservice
-        image: crdaprusscdemo.azurecr.io/vehicleregistrationservice:latest
+        image: crdaprusscdemo.azurecr.io/vehicleregistrationservice:assignment02
         ports:
         - containerPort: 6002
         imagePullPolicy: Always

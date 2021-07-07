@@ -38,10 +38,11 @@ spec:
         dapr.io/sidecar-memory-request: "250Mi"
         dapr.io/sidecar-cpu-limit: "300m"
         dapr.io/sidecar-memory-limit: "1000Mi"
+        dapr.io/config: "zipkin"
     spec:
       containers:
       - name: finecollectionservice
-        image: crdaprusscdemo.azurecr.io/finecollectionservice:latest
+        image: crdaprusscdemo.azurecr.io/finecollectionservice:assignment02
         ports:
         - containerPort: 6001
         imagePullPolicy: Always
