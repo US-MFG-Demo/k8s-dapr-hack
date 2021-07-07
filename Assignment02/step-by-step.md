@@ -254,31 +254,53 @@ So how can you check whether or not the call to the VehicleRegistrationService i
 
 Use Azure Container Registry Tasks to have the Azure Container Registry build & store your container image.
 
-1. Navigate to the src/VehicleRegistrationService directory & use a Azure Container Registry task to build your image from source.
+1. By default, Dapr sidecars run on **port 3500** when deployed to AKS. This means you will need to change the port numbers in the
+FineCollectionService & TrafficControlService to **port 3500**.
 
-```
-az acr build --registry crdaprusscdemo --image vehicleregistrationservice:assignment02 .
-```
+   - src/FineCollectionService/Proxies/VehicleRegistrationService.cs
+   - src/TrafficControlService/Controllers/TrafficController.cs
 
-2. Deploy the VehicleRegistrationService image to the Azure Kubernetes Service. You will need to get the DNS name (found in the
+2. Navigate to the src/VehicleRegistrationService directory & use the Azure Container Registry task to build your image from source.
+
+   ```
+   az acr build --registry crdaprusscdemo --image vehicleregistrationservice:assignment02 .
+   ```
+
+2. Modify the ./deploy/deploy.yaml file with the custom settings for your deployment to Azure. You will need to get the DNS name (found in the
 new resource group that AKS auto-generated, look for a resource group that starts with "MC_") and Azure Container Registry 
 login server/repository:tag name to match your deployed Azure resources. Use these to replace the "Ingress.spec.rules.host" and the 
 "Deployment.spec.template.spec.containers.image" in the ./deploy/deploy.yaml file before running the "apply" command.
 
-```
-kubectl apply -f ./deploy/deploy.yaml
-```
+   **Ingress.spec.rules.host example**
+   ```yaml
+   spec:
+   rules:
+   - host: finecollectionservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io
+   ```
+
+   **Deployment.spec.template.spec.containers.image example**
+   ```yaml
+   spec:
+   containers:
+   - name: finecollectionservice
+      image: crdaprusscdemo.azurecr.io/finecollectionservice:assignment02
+   ```
+
+3. Deploy the VehicleRegistrationService image to the Azure Kubernetes Service. 
+
+   ```
+   kubectl apply -f ./deploy/deploy.yaml
+   ```
 
 3. Repeat these steps for the FineCollectionService & the TrafficControlService.
 
 4. Modify the src/Simulation/Proxies/HttpTrafficControlService.cs file to use the new URLs for your AKS hosted application.
 
-Example:
+   **Example**
 
-```
-_httpClient.PostAsync("http://trafficcontrolservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io/v1.0/invoke/trafficcontrolservice/method/entrycam", message).Wait();
-
-```
+   ```
+   _httpClient.PostAsync("http://trafficcontrolservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io/v1.0/invoke/trafficcontrolservice/method/entrycam", message).Wait();
+   ```
 
 ## Next assignment
 

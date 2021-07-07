@@ -545,16 +545,28 @@ change your application code.
 
 Use Azure Container Registry Tasks to have the Azure Container Registry build & store your container image.
 
-1. Navigate to the src/TrafficControlService directory & use a Azure Container Registry task to build your image from source. **Note the change in image tag**
+1. Navigate to the src/TrafficControlService directory & use the Azure Container Registry task to build your image from source. **Note the change in image tag**
 
-```
-az acr build --registry crdaprusscdemo --image vehicleregistrationservice:assignment03 .
-```
+   ```
+   az acr build --registry crdaprusscdemo --image trafficcontrolservice:assignment03 .
+   ```
 
-2. Deploy the TrafficControLService image to the Azure Kubernetes Service. You will need to **change the image tag** that will get deployed in the deploy.yaml file.
+2. Update the src/TrafficControlService/deploy/deploy.yaml file with the new image tab.
 
-```
-kubectl apply -f ./deploy/deploy.yaml
+   ```yaml
+   spec:
+      containers:
+      - name: trafficcontrolservice
+        image: crdaprusscdemo.azurecr.io/trafficcontrolservice:assignment03
+   ```
+
+3. Deploy the TrafficControlService image to the Azure Kubernetes Service.
+
+   ```
+   kubectl apply -f ./deploy/deploy.yaml
+   ```
+
+3. Repeat theses steps for the FineCollectionService.
 
 ## Next assignment
 
