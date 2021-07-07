@@ -385,12 +385,12 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
 
 4. Update the src/TrafficControlService/deploy/deploy.yaml file with the new image tab.
 
-   ```yaml
-   spec:
-      containers:
-      - name: trafficcontrolservice
-        image: crdaprusscdemo.azurecr.io/trafficcontrolservice:assignment04
-   ```
+    ```yaml
+    spec:
+        containers:
+        - name: trafficcontrolservice
+          image: crdaprusscdemo.azurecr.io/trafficcontrolservice:assignment04
+    ```
 
 5. Deploy the TrafficControlService image to the Azure Kubernetes Service.
 
