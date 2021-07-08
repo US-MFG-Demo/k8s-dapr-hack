@@ -278,6 +278,21 @@ You will connect to the server and see its logs:
 
 ![](img/mosquitto-logging.png)
 
+## Use Azure IoT Hub, EventHub
+
+1. Run the following code to provision an IoT device identity to represent your simulation application as it writes to the IoT Hub.
+   Change the "hub-name" to your IoT hub name
+
+   ```
+   az iot hub device-identity create --device-id simulation --hub-name iothub-dapr-ussc-demo
+   ```
+
+2. Generate a new SAS token for your simulation device to use to authenticate with the IoT Hub.
+
+   ```
+   az iot hub generate-sas-token --device-id simulation --hub-name iothub-dapr-ussc-demo
+   ```
+
 ## Next assignment
 
 Make sure you stop all running processes and close all the terminal windows in VS Code before proceeding to the next assignment.
