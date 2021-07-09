@@ -18,3 +18,4 @@ resource serviceBusTrafficControlTopic 'Microsoft.ServiceBus/namespaces/topics@2
 }
 
 output serviceBusName string = serviceBus.name
+output serviceBusEndpoint string = serviceBus.properties.serviceBusEndpoint

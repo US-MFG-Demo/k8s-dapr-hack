@@ -7,8 +7,8 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2021-01-01-preview' = 
     type: 'SystemAssigned'
   }
   sku: {
-    name: 'Basic'
-    tier: 'Basic'
+    name: 'Standard'
+    tier: 'Standard'
     capacity: 1
   }
 }
@@ -21,6 +21,10 @@ resource eventHubEntryCam 'Microsoft.EventHub/namespaces/eventhubs@2021-01-01-pr
     partitionCount: 1
     messageRetentionInDays: 1
   }
+}
+
+resource eventHubEntryCamConsumerGroup 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2021-01-01-preview' = {
+  name: '${eventHubNamespace.name}/${eventHubEntryCamName}/trafficcontrolservice'
 }
 
 resource eventHubEntryCamListenAuthorizationRule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2021-01-01-preview' = {
@@ -40,6 +44,10 @@ resource eventHubExitCam 'Microsoft.EventHub/namespaces/eventhubs@2021-01-01-pre
     partitionCount: 1
     messageRetentionInDays: 1
   }
+}
+
+resource eventHubExitCamConsumerGroup 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2021-01-01-preview' = {
+  name: '${eventHubNamespace.name}/${eventHubExitCamName}/trafficcontrolservice'
 }
 
 resource eventHubExitCamListenAuthorizationRule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2021-01-01-preview' = {
@@ -90,7 +98,7 @@ resource iotHub 'Microsoft.Devices/IotHubs@2021-03-31' = {
     }
   }
   properties: {
-    minTlsVersion: '1.2'
+    //minTlsVersion: '1.2'
     routing: {
       endpoints: {
         eventHubs: [
@@ -122,7 +130,7 @@ resource iotHub 'Microsoft.Devices/IotHubs@2021-03-31' = {
         {
           name: 'entrycam'
           source: 'DeviceMessages'
-          condition: 'true'
+          condition: 'trafficcontrol = \'entrycam\''
           endpointNames: [
             eventHubEntryCamName
           ]
@@ -131,7 +139,7 @@ resource iotHub 'Microsoft.Devices/IotHubs@2021-03-31' = {
         {
           name: 'exitcam'
           source: 'DeviceMessages'
-          condition: 'true'
+          condition: 'trafficcontrol = \'exitcam\''
           endpointNames: [
             eventHubExitCamName
           ]

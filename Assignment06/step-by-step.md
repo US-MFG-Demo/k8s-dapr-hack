@@ -287,11 +287,102 @@ You will connect to the server and see its logs:
    az iot hub device-identity create --device-id simulation --hub-name iothub-dapr-ussc-demo
    ```
 
-2. Generate a new SAS token for your simulation device to use to authenticate with the IoT Hub.
+2. Get the connection string for this device.
 
    ```
-   az iot hub generate-sas-token --device-id simulation --hub-name iothub-dapr-ussc-demo
+   az iot hub device-identity connection-string show --device-id simulation --hub-name iothub-dapr-ussc-demo 
    ```
+
+3. Add the NuGet package Microsoft.Azure.Devices.Client to the Simulation project.
+
+   ```
+   dotnet add package Microsoft.Azure.Devices.Client
+   ```
+
+4. Replace the implementation of the src/Simulation/Proxies/MqttTrafficControlService.cs class with similar code to below.  
+
+   ```csharp
+   using Microsoft.Azure.Devices.Client;
+   using System.Text;
+   using System.Text.Json;
+   using Simulation.Events;
+
+   namespace Simulation.Proxies
+   {
+      public class MqttTrafficControlService : ITrafficControlService
+      {
+         private readonly DeviceClient _client;
+
+         public MqttTrafficControlService(int camNumber)
+         {
+               _client = DeviceClient.CreateFromConnectionString("HostName=iothub-dapr-ussc-demo.azure-devices.net;DeviceId=simulation;SharedAccessKey=/cRA4cYbcyC7FakekeyNV6CrfugBe8Ka2z2m8=", TransportType.Mqtt);
+         }
+
+         public void SendVehicleEntry(VehicleRegistered vehicleRegistered)
+         {
+               var eventJson = JsonSerializer.Serialize(vehicleRegistered);
+               var message = new Message(Encoding.UTF8.GetBytes(eventJson));
+               message.Properties.Add("trafficcontrol", "entrycam");
+               _client.SendEventAsync(message).Wait();
+         }
+
+         public void SendVehicleExit(VehicleRegistered vehicleRegistered)
+         {
+               var eventJson = JsonSerializer.Serialize(vehicleRegistered);
+               var message = new Message(Encoding.UTF8.GetBytes(eventJson));
+               message.Properties.Add("trafficcontrol", "exitcam");
+               _client.SendEventAsync(message).Wait();
+         }
+      }
+   }
+   ```
+
+5. Get the connection strings for your event hubs (one for the **entrycam** EventHub & one for the **exitcam** EventHub). Customize for your deployment.
+
+   ```
+   az eventhubs eventhub authorization-rule keys list --eventhub-name entrycam --namespace-name ehn-dapr-ussc-demo-trafficcontrol --resource-group rg-dapr-workshop-ussc-demo --name iothubroutes_iothub-dapr-ussc-demo --query primaryConnectionString
+   ```
+
+6. Get the storage account key for your storage account. Customize for your deployment
+
+   ```
+   az storage account keys list --account-name sadaprusscdemo --resource-group rg-dapr-workshop-ussc-demo --query [0].value
+   ```
+
+7. Replace the implementation of the src/dapr/components/entrycam.yaml file with code similar to below.
+
+   ```yaml
+   apiVersion: dapr.io/v1alpha1
+   kind: Component
+   metadata:
+   name: entrycam
+   spec:
+   type: bindings.azure.eventhubs
+   version: v1
+   metadata:
+   - name: connectionString
+      value: "Endpoint=sb://ehn-dapr-ussc-demo-trafficcontrol.servicebus.windows.net/;SharedAccessKeyName=listen;SharedAccessKey=IQrpNCFakekeykn5xkSVyn5y4uZCGerc=;EntityPath=entrycam"
+   - name: consumerGroup
+      value: "trafficcontrolservice"
+   - name: storageAccountName
+      value: "sadaprusscdemo"
+   - name: storageAccountKey
+      value: "IKJgQ4KAFakekeyhAmi4zSz2ehm1btpQXZ+l68ol7wJmg8TA0ClQChRK7sWnvMEVexgg=="
+   - name: storageContainerName
+      value: "trafficcontrol"
+   scopes:
+   - trafficcontrolservice
+   ```
+
+8. Replace the implementation of the src/dapr/components/exitcam.yaml file with code similar to above.
+
+9. Deploy your updated Dapr deployment files
+
+   ```
+   kubectl apply -f src/dapr/components
+   ```
+
+10. Re-run the Simulation application.
 
 ## Next assignment
 
