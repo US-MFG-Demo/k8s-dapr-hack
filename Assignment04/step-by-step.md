@@ -342,6 +342,62 @@ In this step, you'll simplify state management with the Dapr SDK for .NET. You'l
 
 Now you're ready to test the application. Just repeat steps 2a and 2b.
 
+## Step 4: Deploy to Azure Kubernetes Service
+
+Use Azure Container Registry Tasks to have the Azure Container Registry build & store your container image.
+
+1. By default, Dapr sidecars run on **port 3500** when deployed to AKS. This means you will need to change the port numbers in the
+   TrafficControlService to **port 3500**.
+
+   - src/TrafficControlService/Repositories/DaprVehicleStateRepository.cs
+
+2. Update the src/dapr/components/statestore.yaml file with the key/value pairs for your Azure Redis Cache instance. You can find these on the Overview blade
+   of your Azure Redis Cache instance. Make sure you add the **6380** port number after the host URI.
+
+    **Example:**
+    ```yaml
+    apiVersion: dapr.io/v1alpha1
+    kind: Component
+    metadata:
+    name: statestore
+    namespace: default
+    spec:
+    type: state.redis
+    version: v1
+    metadata:
+    - name: redisHost
+        value: redis-dapr-ussc-demo.redis.cache.windows.net:6380
+    - name: redisPassword
+        value: qu4qw8bFakeKey7KVrBYFFakeKey+v3raFBNA3M=
+    - name: actorStateStore
+        value: true
+    - name: enableTLS
+        value: true
+    scopes:
+    - trafficcontrolservice
+    ```
+
+3. Navigate to the src/TrafficControlService directory & use the Azure Container Registry task to build your image from source. **Note the change in image tag**
+
+    ```
+    az acr build --registry crdaprusscdemo --image trafficcontrolservice:assignment04 .
+    ```
+
+4. Update the src/TrafficControlService/deploy/deploy.yaml file with the new image tab.
+
+    ```yaml
+    spec:
+        containers:
+        - name: trafficcontrolservice
+          image: crdaprusscdemo.azurecr.io/trafficcontrolservice:assignment04
+    ```
+
+5. Deploy the TrafficControlService image to the Azure Kubernetes Service.
+
+    ```
+    kubectl apply -f ./deploy/deploy.yaml
+    ```
+
 ## Next assignment
 
 Congratulations! You have successfully completed assignment 4 by adding Dapr state management to the TrafficControl service.

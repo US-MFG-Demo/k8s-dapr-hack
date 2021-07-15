@@ -208,6 +208,78 @@ You should see the same logs as before. You can also view the fine notification 
 1. Click on an email in the inbox to see its content:
    <img src="img/inbox.png" style="zoom:67%;padding-top: 25px;" />
 
+## Step 5: Deploy to Azure Kubernetes Service
+
+Use Azure Container Registry Tasks to have the Azure Container Registry build & store your container image.
+
+1. Open the Logic App that is deployed to your Azure Resource Group. You will need to initialize the Office 365 connector and copy the HTTP trigger endpoint.
+   1. Click on the **Logic app designer** blade
+   2. Click on the **Send an email (V2)** step and click **Create**. You will have to sign-in with your Office 365-enabled ID.
+   3. Click on the **When a HTTP request is received** step and copy the **HTTP POST URL**. This is the endpoint the Dapr output binding will call to send an email.
+
+2. Update the src/dapr/components/email.yaml file to use the Azure Logic App to send email. You will change the bindings from SMTP to HTTP and fill in the HTTP endpoint
+   for the Logic App in Azure.
+
+   **Example:**
+   ```yaml
+   apiVersion: dapr.io/v1alpha1
+   kind: Component
+   metadata:
+   name: sendmail
+   spec:
+   type: bindings.http
+   version: v1
+   metadata:
+      - name: url
+        value: https://prod-18.southcentralus.logic.azure.com:443/workflows/e76d81048c3941f18638ab0055bba68a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8z3TLKcglxFwESf9HY_3pkViSk6fFR2m-db-BWobZFw
+   scopes:
+   - finecollectionservice
+   ```
+
+3. Navigate to the src/FineCollectionService directory. Open the src\FineCollectionService\Controllers\CollectionController.cs file. Modify the **CollectFine** method to
+   pass in a JSON object to the Logic App's HTTP endpoint. 
+
+   Add the following to the using statements at the top of the file.
+
+   ```csharp
+   using Newtonsoft.Json.Linq;
+   ```
+
+   Replace the line that starts with "var metadata = new Dictionary<string, string>" with the following.
+
+   ```csharp
+   dynamic email = new JObject();
+   email.from = "noreply@cfca.gov";
+   email.to = "<YOUR_EMAIL_ADDRESS_HERE>";
+   email.subject = $"Speeding violation on the {speedingViolation.RoadId}";
+   email.body = body;
+
+   var jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(email);
+
+   await daprClient.InvokeBindingAsync("sendmail", "create", jsonString);
+   ```
+
+4. Use the Azure Container Registry task to build your image from source. **Note the change in image tag**
+
+   ```
+   az acr build --registry crdaprusscdemo --image finecollectionservice:assignment05 .
+   ```
+
+5. Update the src/finecollectionservice/deploy/deploy.yaml file with the new image tab.
+
+   ```yaml
+   spec:
+      containers:
+      - name: finecollectionservice
+        image: crdaprusscdemo.azurecr.io/finecollectionservice:assignment05
+   ```
+
+6. Deploy the FineCollectionService image to the Azure Kubernetes Service.
+
+   ```
+   kubectl apply -f ./deploy/deploy.yaml
+   ```
+
 ## Next assignment
 
 Make sure you stop all running processes and close all the terminal windows in VS Code before proceeding to the next assignment.
