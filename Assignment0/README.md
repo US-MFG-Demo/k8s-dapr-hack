@@ -21,15 +21,13 @@ In this assignment, you'll configure and make sure you have all the pre-requisit
   - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 - Docker for desktop ([download](https://www.docker.com/products/docker-desktop))
 - Dapr CLI and Dapr runtime ([instructions](https://docs.dapr.io/getting-started/install-dapr-selfhost/))
+- Install Azure PowerShell ([instructions](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-6.2.1))
+- Install PowerShell [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) tools (this will be used to deploy Azure resources)
 - Install Azure CLI ([instructions]())
   - Linux ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#linux))
   - macOS ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos))
   - Windows ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli))
 - Install Azure CLI Bicep tools ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-cli))
-- Install Powershell [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) tools (this will be used to deploy Azure resources)
-  - Linux ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt))
-  - macOS ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#macos))
-  - Windows ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#windows))
 - Install Bicep extension for VS Code ([instructions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep))
 
 

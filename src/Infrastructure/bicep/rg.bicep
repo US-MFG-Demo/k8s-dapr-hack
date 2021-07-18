@@ -1,10 +1,17 @@
-param p_subscriptionGuid = subscription().subscriptionId
-param p_rgName string = 'rg${uniqueString(p_subscriptionGuid)}'
-param p_location string = 'westus'
+param appName string
+param region string
+param environment string
+param adminUserName string
+param publicSSHKey string
 
 targetScope = 'subscription'
 
+var longName = '${appName}-${environment}'
+var rgName = 'rg-${longName}'
+
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: p_rgName
-  location: p_location
+  name: rgName
+  location: region
 }
+
+output resourceGroupName string = rgName
