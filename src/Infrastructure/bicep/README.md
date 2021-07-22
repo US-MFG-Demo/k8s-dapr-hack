@@ -152,11 +152,33 @@ Copy your public SSH key string so you can configure the AKS cluster to use it. 
    New-AzRoleAssignment -RoleDefinitionName 'Key Vault Administrator' -SignInName $signInName -Scope "/subscriptions/$subscriptionId/resourcegroups/$resourceGroupName/providers/Microsoft.KeyVault/vaults/$keyVaultName"
    ```
 
-9. Set up Application Insights so you can monitor all the services. Update the `ApplicationInsights.InstrumentationKey` setting in the 
-   `src/VehicleRegistrationService/appsettings.json` file with the **appInsightsInstrumentationKey**. Repeat for the `FineCollectionService` and `TrafficControlService`.
+9. Set up Application Insights so you can monitor all the services. 
+
+   Navigate to the `src/VehicleRegistration` directory. Add the following NuGet package.
+
+   ```
+   dotnet add package Microsoft.ApplicationInsights.AspNetCore --version 2.17.0
+   ```
+
+   Add the `ApplicationInsights.InstrumentationKey` setting in the `src/VehicleRegistrationService/appsettings.json` file with the **appInsightsInstrumentationKey**. 
 
    ```json
    "ApplicationInsights": {
     "InstrumentationKey": "613bba51-Fake-4273-keys-ec9c40539b0f"
    }
    ```
+
+   Add the Application Insights service to the application in the `src/VehicleRegistrationService/Startup.cs` file.
+
+   ```csharp
+   public void ConfigureServices(IServiceCollection services)
+   {
+      services.AddApplicationInsightsTelemetry();
+      
+      services.AddScoped<IVehicleInfoRepository, InMemoryVehicleInfoRepository>();
+
+      services.AddControllers();
+   }
+   ```
+
+   Repeat for the `FineCollectionService` and `TrafficControlService`.
