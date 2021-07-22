@@ -1,8 +1,9 @@
-# Assignment 0 - Install tools and pre-requisites
+# Assignment 0 - Install tools and Azure pre-requisites
 
 ## Assignment goals
 
-In this assignment, you'll configure and make sure you have all the pre-requisites installed on your machine.
+In this assignment, you'll configure and make sure you have all the pre-requisites installed on your machine as well as have all the Azure resources created.
+Once you start creating the Azure resources you can move on to Assignment 1 while the resources get created, which can take from 5 to 25 minutes, depending on the region used.
 
 ## Step 1. Install pre-requisites
 
@@ -50,8 +51,193 @@ Make sure you have at least the following versions installed. This workshop has 
    ```console
    git clone https://github.com/robvet/dapr-workshop.git
    ```
+Now we need to create the Azure resources will be using for the subsequent assignments. 
 
-3. Review  the source code of the different services. You can open the `src` folder in this repo in VS Code. All folders used in the assignments are specified relative to the root of the folder where you have cloned the dapr-workshop repository.
+You will use Bicep and PowerShell to create the resources needed:
 
+1. If you are using [Azure Cloud Shell](https://shell.azure.com)) then you can skip this step. Open the [terminal window](https://code.visualstudio.com/docs/editor/integrated-terminal) in VS Code and make sure you're logged in to Azure
+
+   ```
+   az login
+   ```
+2. Make sure you have selected the subscription you want to work in. Replace the Xs with your subscription GUID or subscription name:
+
+   ```
+   az account set --subscription "xxxx-xxxx-xxxx-xxxx"
+   ```
+3. Generate an SSH key pair if you don't already have one.
+
+   ```
+   ssh-keygen -t rsa -b 2048
+   ```
+   Copy your public SSH key string so you can configure the parameter file in the next step to use it. It can be found in the "id_rsa.pub" file that was created or updated by the `ssh-keygen` command.
+
+4. Modify the `src\Infrastructure\bicep\main.parameters.json` file so it contains the proper data for your deployment:
+
+```json
+{
+    "appName": {
+        "value": "dapr"
+    },
+    "region": {
+        "value": "southcentralus"
+    },
+    "environment": {
+        "value": "youruniqueid123"
+    },
+    "adminUserName": {
+        "value": "adminbruce"
+    },
+    "publicSSHKey": {
+        "value": "ssh-rsa AAAAB...wnBTn bruce.wayne@wayneenterprises.com"        
+    }
+}
+```
+
+3. Create a new resource group to deploy your Azure infrastructure into, by deploying the `src\Infrastructure\rg.bicep` file and store the name of the created resource group name in a variable. Make sure to replace the location parameter below with the proper Azure region that you want to use:
+
+   ```
+   az deployment sub create --location "southcentralus" --template-file rg.bicep --parameters .\main.parameters.json --query "properties.outputs" --output yamlc
+   ```
+
+4. The previous command should have ended with success, by displaying the name of the resource group that was created. Something similar to this:  
+
+   ```yaml
+   resourceGroupName:
+   type: String
+   value: rg-dapr-youruniqueid123
+   ```
+
+5. Take note of the resource group name. You're now ready to create all the Azure resources under that resource group. To do that, run the following Azure CLI command:
+
+   ```
+   az deployment group create --resource-group "rg-dapr-youruniqueid123" --template-file main.bicep --parameters .\main.parameters.json --query "properties.outputs" --output yamlc
+   ```
+
+   **NOTE**: This is a long-running command and may take several minutes. You're encouraged to jump to the next lab while the command is creating all the Azure resources.
+
+   In the outputs for this command, you will find the name of the various Azure resources that have been created.
+   You will need these to configure your Dapr services.
+
+   ```yaml
+   aksFQDN:
+      type: String
+      value: dapr-mce123-609718f5.hcp.southcentralus.azmk8s.io
+   aksName:
+      type: String
+      value: aks-dapr-mce123
+   aksazurePortalFQDN:
+      type: String
+      value: dapr-mce123-609718f5.portal.hcp.southcentralus.azmk8s.io
+   containerRegistryLoginServerName:
+      type: String
+      value: crdaprmce123.azurecr.io
+   containerRegistryName:
+      type: String
+      value: crdaprmce123
+   eventHubEntryCamName:
+      type: String
+      value: ehn-dapr-mce123-trafficcontrol/entrycam
+   eventHubExitCamName:
+      type: String
+      value: ehn-dapr-mce123-trafficcontrol/exitcam
+   eventHubNamespaceHostName:
+      type: String
+      value: https://ehn-dapr-mce123-trafficcontrol.servicebus.windows.net:443/
+   eventHubNamespaceName:
+      type: String
+      value: ehn-dapr-mce123-trafficcontrol
+   iotHubName:
+      type: String
+      value: iothub-dapr-mce123
+   keyVaultName:
+      type: String
+      value: kv-dapr-mce123
+   logicAppAccessEndpoint:
+      type: String
+      value: https://prod-29.southcentralus.logic.azure.com:443/workflows/9bd179c8dd7049b8a152e5f2608f8efc
+   logicAppName:
+      type: String
+      value: logic-smtp-dapr-mce123
+   redisCacheName:
+      type: String
+      value: redis-dapr-mce123
+   serviceBusEndpoint:
+      type: String
+      value: https://sb-dapr-mce123.servicebus.windows.net:443/
+   serviceBusName:
+      type: String
+      value: sb-dapr-mce123
+   storageAccountContainerName:
+      type: String
+      value: trafficcontrol
+   storageAccountKey:
+      type: String
+      value: 7Ck76nP/5kFEhNx6C...V85L+0dFMFOA/xJLIvK25f2irUmVouPRbSGXKEzRQ==
+   storageAccountName:
+      type: String
+      value: sadaprmce123
+   ```
+
+5. Run the following command to get the AKS credentials for your cluster.
+
+   ```
+   az aks get-credentials -n "<aksname> -g "<resource-group-name>"
+   ```
+
+   Verify your "target" cluster is set correctly.
+
+   ```
+   kubectl config get-contexts
+   ```
+
+   Your results should look something like this.
+
+   ```
+   CURRENT   NAME                 CLUSTER              AUTHINFO                                                    NAMESPACE
+   *         aks-dapr-mce123      aks-dapr-mce123      clusterUser_rg-dapr-mce123_aks-dapr-mce123
+   ```
+
+6. Install Dapr in your cluster
+
+   Run the following command to initialize Dapr in your Kubernetes cluster using your current context.
+
+   ```
+   dapr init -k
+   ```
+   Your results should look something like this.
+
+   ```
+   Making the jump to hyperspace...
+   Note: To install Dapr using Helm, see here: https://docs.dapr.io/getting-started/install-dapr-kubernetes/#install-with-helm-advanced
+
+   Deploying the Dapr control plane to your cluster...
+   Success! Dapr has been installed to namespace dapr-system. To verify, run `dapr status -k' in your terminal. To get started, go here: https://aka.ms/dapr-getting-started
+   ```
+
+   Verify with the following command.
+
+   ```
+   dapr status -k
+   ```
+
+   Your results should look something like this.
+
+   ```
+   NAME                   NAMESPACE    HEALTHY  STATUS   REPLICAS  VERSION  AGE  CREATED
+   dapr-sentry            dapr-system  True     Running  1         1.2.2    1m   2021-07-02 08:45.44
+   dapr-sidecar-injector  dapr-system  True     Running  1         1.2.2    1m   2021-07-02 08:45.44
+   dapr-operator          dapr-system  True     Running  1         1.2.2    1m   2021-07-02 08:45.44
+   dapr-dashboard         dapr-system  True     Running  1         0.6.0    1m   2021-07-02 08:45.44
+   dapr-placement-server  dapr-system  True     Running  1         1.2.2    1m   2021-07-02 08:45.45
+   ```
+
+7. Assign RBAC permissions to AKS
+
+   You need to grant the managed identity of AKS access to your Azure Container Registry so it can pull images. Run the following command.
+
+   ```
+   az aks update -n aks-dapr-mce123 -g rg-dapr-mce123 --attach-acr crdaprmce123
+   ```
 4. Go to [assignment 1](Assignment01/README.md).
 
