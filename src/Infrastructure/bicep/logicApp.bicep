@@ -15,6 +15,9 @@ resource logicAppConnection 'Microsoft.Web/connections@2016-06-01' = {
 
 resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: 'logic-smtp-${longName}'
+  dependsOn: [
+      logicAppConnection
+  ]
   location: resourceGroup().location
   properties: {
     definition: {
