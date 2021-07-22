@@ -40,6 +40,7 @@ module aksModule 'aks.bicep' = {
     longName: longName
     adminUsername: adminUsername
     publicSSHKey: publicSSHKey
+    keyVaultName: keyVaultModule.outputs.keyVaultName
   }  
 }
 
@@ -64,6 +65,8 @@ module storageAccountModule 'storage.bicep' = {
   }  
 }
 
+output subscriptionId string = subscription().subscriptionId
+output resourceGroupName string = resourceGroup().name
 output serviceBusName string = serviceBusModule.outputs.serviceBusName
 output serviceBusEndpoint string = serviceBusModule.outputs.serviceBusEndpoint
 output redisCacheName string = redisCacheModule.outputs.redisCacheName
@@ -76,11 +79,16 @@ output containerRegistryLoginServerName string = containerRegistryModule.outputs
 output aksName string = aksModule.outputs.aksName
 output aksFQDN string = aksModule.outputs.aksfqdn
 output aksazurePortalFQDN string = aksModule.outputs.aksazurePortalFQDN
+output aksNodeResourceGroupName string = aksModule.outputs.aksNodeResourceGroupName
+output aksManagedIdentityName string = aksModule.outputs.aksManagedIdentityName
+output aksManagedIdentityResourceId string = aksModule.outputs.aksManagedIdentityResourceId
+output aksManagedIdentityClientId string = aksModule.outputs.aksManagedIdentityClientId
 output iotHubName string = mqttModule.outputs.iotHubName
 output eventHubNamespaceName string = mqttModule.outputs.eventHubNamespaceName
 output eventHubNamespaceHostName string = mqttModule.outputs.eventHubNamespaceHostName
 output eventHubEntryCamName string = mqttModule.outputs.eventHubEntryCamName
 output eventHubExitCamName string = mqttModule.outputs.eventHubExitCamName
 output storageAccountName string = storageAccountModule.outputs.storageAccountName
-output storageAccountContainerName string = storageAccountModule.outputs.storageAccountContainerName
-output storageAccountKey string = storageAccountModule.outputs.storageAccountKey
+output storageAccountEntryCamContainerName string = storageAccountModule.outputs.storageAccountEntryCamContainerName
+output storageAccountExitCamContainerName string = storageAccountModule.outputs.storageAccountExitCamContainerName
+output storageAccountKey string = storageAccountModule.outputs.storageAccountContainerKey

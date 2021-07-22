@@ -68,7 +68,7 @@ resource iotHubUserEventHubEntryCamEventHubDataSenderRoleAssignment 'Microsoft.A
   name: guid(resourceGroup().id, iotHubUserAssignedIdentity.name, 'entrycam')
   properties: {
     principalId: iotHubUserAssignedIdentity.properties.principalId
-    roleDefinitionId: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/2b629674-e913-4c01-ae53-ef4638d8f975'    
+    roleDefinitionId: subscriptionResourceId(subscription().subscriptionId, 'Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')
   }
   scope: eventHubEntryCam
 }
@@ -77,7 +77,7 @@ resource iotHubUserEventHubExitCamEventHubDataSenderRoleAssignment 'Microsoft.Au
   name: guid(resourceGroup().id, iotHubUserAssignedIdentity.name, 'exitcam')
   properties: {
     principalId: iotHubUserAssignedIdentity.properties.principalId
-    roleDefinitionId: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/2b629674-e913-4c01-ae53-ef4638d8f975'    
+    roleDefinitionId: subscriptionResourceId(subscription().subscriptionId, 'Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')  
   }
   scope: eventHubExitCam
 }
