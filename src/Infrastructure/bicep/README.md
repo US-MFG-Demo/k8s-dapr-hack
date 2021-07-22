@@ -75,6 +75,7 @@ Copy your public SSH key string so you can configure the AKS cluster to use it. 
    storageAccountEntryCamContainerName    String                     trafficcontrol-entrycam
    storageAccountExitCamContainerName     String                     trafficcontrol-exitcam
    storageAccountKey                      String                     IKJgQ4KAJOVDkwgaTLFakekeyAmi4zSz2ehm1btpQXZ+l68ol7wJmg8TA0ClQChRK7sWnvMEVexgg==
+   appInsightsInstrumentationKey          String                     613bba51-Fake-4273-keys-ec9c40539b0f
    ```
 
 5. Run the following command to get the AKS credentials for your cluster.
@@ -149,4 +150,13 @@ Copy your public SSH key string so you can configure the AKS cluster to use it. 
    $resourceGroupName = "rg-dapr-workshop-ussc-demo";
    $keyVaultName = "kv-dapr-ussc-demo";
    New-AzRoleAssignment -RoleDefinitionName 'Key Vault Administrator' -SignInName $signInName -Scope "/subscriptions/$subscriptionId/resourcegroups/$resourceGroupName/providers/Microsoft.KeyVault/vaults/$keyVaultName"
+   ```
+
+9. Set up Application Insights so you can monitor all the services. Update the `ApplicationInsights.InstrumentationKey` setting in the 
+   `src/VehicleRegistrationService/appsettings.json` file with the **appInsightsInstrumentationKey**. Repeat for the `FineCollectionService` and `TrafficControlService`.
+
+   ```json
+   "ApplicationInsights": {
+    "InstrumentationKey": "613bba51-Fake-4273-keys-ec9c40539b0f"
+   }
    ```

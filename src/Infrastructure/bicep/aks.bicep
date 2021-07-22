@@ -8,6 +8,15 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
   location: resourceGroup().location  
 }
 
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: 'ai-${longName}'
+  location: resourceGroup().location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+  }
+}
+
 resource aksUserAssignedManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: 'mi-aks-${longName}'
   location: resourceGroup().location
@@ -70,6 +79,9 @@ resource aks 'Microsoft.ContainerService/managedClusters@2021-03-01' = {
         ]
       }
     }
+    servicePrincipalProfile: {
+      clientId: 'msi'
+    }
     addonProfiles: {
       httpApplicationRouting: {
         enabled: true
@@ -96,3 +108,5 @@ output logAnalyticsName string = logAnalytics.name
 output aksManagedIdentityName string = aksUserAssignedManagedIdentity.name
 output aksManagedIdentityResourceId string = aksUserAssignedManagedIdentity.id
 output aksManagedIdentityClientId string = aksUserAssignedManagedIdentity.properties.clientId
+output appInsightsName string = appInsights.name
+output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey

@@ -92,3 +92,5 @@ output storageAccountName string = storageAccountModule.outputs.storageAccountNa
 output storageAccountEntryCamContainerName string = storageAccountModule.outputs.storageAccountEntryCamContainerName
 output storageAccountExitCamContainerName string = storageAccountModule.outputs.storageAccountExitCamContainerName
 output storageAccountKey string = storageAccountModule.outputs.storageAccountContainerKey
+output appInsightsName string = aksModule.outputs.appInsightsName
+output appInsightsInstrumentationKey string = aksModule.outputs.appInsightsInstrumentationKey
