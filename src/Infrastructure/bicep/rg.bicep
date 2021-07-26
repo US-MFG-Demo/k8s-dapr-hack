@@ -1,7 +1,7 @@
 param appName string
 param region string
 param environment string
-param adminUserName string
+param adminUsername string
 param publicSSHKey string
 
 targetScope = 'subscription'
