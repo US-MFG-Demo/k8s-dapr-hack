@@ -241,6 +241,5 @@ You will use Bicep and Azure CLI to create the resources needed:
    ```shell
    az role assignment create --role "Key Vault Secrets Officer" --assignee "<user principal name>" --scope /subscriptions/<subscriptionId>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>
    ```
-
-8. Go to [assignment 1](Assignment01/README.md).
+8. Go to [assignment 1](../Assignment01/README.md).
 
