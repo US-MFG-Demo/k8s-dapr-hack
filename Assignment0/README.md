@@ -31,7 +31,6 @@ Once you start creating the Azure resources you can move on to Assignment 1 whil
 - Install Azure CLI Bicep tools ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-cli))
 - Install Bicep extension for VS Code ([instructions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep))
 
-
 All scripts in the instructions are Powershell scripts. If you're working on a Mac, it is recommended to install Powershell for Mac:
 
 - Powershell for Mac ([instructions](https://docs.microsoft.com/nl-nl/powershell/scripting/install/installing-powershell-core-on-macos?view=powershell-7.1))
@@ -48,7 +47,7 @@ Make sure you have at least the following versions installed. This workshop has 
 
 2. Clone the Github repository to a local folder on your machine:
 
-   ```console
+   ```shell
    git clone https://github.com/robvet/dapr-workshop.git
    ```
 Now we need to create the Azure resources will be using for the subsequent assignments. 
@@ -57,46 +56,46 @@ You will use Bicep and PowerShell to create the resources needed:
 
 1. If you are using [Azure Cloud Shell](https://shell.azure.com)) then you can skip this step. Open the [terminal window](https://code.visualstudio.com/docs/editor/integrated-terminal) in VS Code and make sure you're logged in to Azure
 
-   ```
+   ```shell
    az login
    ```
 2. Make sure you have selected the subscription you want to work in. Replace the Xs with your subscription GUID or subscription name:
 
-   ```
+   ```shell
    az account set --subscription "xxxx-xxxx-xxxx-xxxx"
    ```
 3. Generate an SSH key pair if you don't already have one.
 
-   ```
+   ```shell
    ssh-keygen -t rsa -b 2048
    ```
    Copy your public SSH key string so you can configure the parameter file in the next step to use it. It can be found in the "id_rsa.pub" file that was created or updated by the `ssh-keygen` command.
 
 4. Modify the `src\Infrastructure\bicep\main.parameters.json` file so it contains the proper data for your deployment:
 
-```json
-{
-    "appName": {
-        "value": "dapr"
-    },
-    "region": {
-        "value": "southcentralus"
-    },
-    "environment": {
-        "value": "youruniqueid123"
-    },
-    "adminUserName": {
-        "value": "adminbruce"
-    },
-    "publicSSHKey": {
-        "value": "ssh-rsa AAAAB...wnBTn bruce.wayne@wayneenterprises.com"        
-    }
-}
-```
+   ```json
+   {
+      "appName": {
+         "value": "dapr"
+      },
+      "region": {
+         "value": "southcentralus"
+      },
+      "environment": {
+         "value": "youruniqueid123"
+      },
+      "adminUserName": {
+         "value": "adminbruce"
+      },
+      "publicSSHKey": {
+         "value": "ssh-rsa AAAAB...wnBTn bruce.wayne@wayneenterprises.com"        
+      }
+   }
+   ```
 
 3. Create a new resource group to deploy your Azure infrastructure into, by deploying the `src\Infrastructure\rg.bicep` file and store the name of the created resource group name in a variable. Make sure to replace the location parameter below with the proper Azure region that you want to use:
 
-   ```
+   ```shell
    az deployment sub create --location "southcentralus" --template-file rg.bicep --parameters .\main.parameters.json --query "properties.outputs" --output yamlc
    ```
 
@@ -110,7 +109,7 @@ You will use Bicep and PowerShell to create the resources needed:
 
 5. Take note of the resource group name. You're now ready to create all the Azure resources under that resource group. To do that, run the following Azure CLI command:
 
-   ```
+   ```shell
    az deployment group create --resource-group "rg-dapr-youruniqueid123" --template-file main.bicep --parameters .\main.parameters.json --query "properties.outputs" --output yamlc
    ```
 
@@ -181,19 +180,19 @@ You will use Bicep and PowerShell to create the resources needed:
 
 5. Run the following command to get the AKS credentials for your cluster.
 
-   ```
-   az aks get-credentials -n "<aksname> -g "<resource-group-name>"
+   ```shell
+   az aks get-credentials --name "<aksname>" --resource-group "<resource-group-name>"
    ```
 
    Verify your "target" cluster is set correctly.
 
-   ```
+   ```shell
    kubectl config get-contexts
    ```
 
    Your results should look something like this.
 
-   ```
+   ```shell
    CURRENT   NAME                 CLUSTER              AUTHINFO                                                    NAMESPACE
    *         aks-dapr-mce123      aks-dapr-mce123      clusterUser_rg-dapr-mce123_aks-dapr-mce123
    ```
@@ -202,12 +201,12 @@ You will use Bicep and PowerShell to create the resources needed:
 
    Run the following command to initialize Dapr in your Kubernetes cluster using your current context.
 
-   ```
+   ```shell
    dapr init -k
    ```
    Your results should look something like this.
 
-   ```
+   ```shell
    Making the jump to hyperspace...
    Note: To install Dapr using Helm, see here: https://docs.dapr.io/getting-started/install-dapr-kubernetes/#install-with-helm-advanced
 
@@ -217,13 +216,13 @@ You will use Bicep and PowerShell to create the resources needed:
 
    Verify with the following command.
 
-   ```
+   ```shell
    dapr status -k
    ```
 
    Your results should look something like this.
 
-   ```
+   ```shell
    NAME                   NAMESPACE    HEALTHY  STATUS   REPLICAS  VERSION  AGE  CREATED
    dapr-sentry            dapr-system  True     Running  1         1.2.2    1m   2021-07-02 08:45.44
    dapr-sidecar-injector  dapr-system  True     Running  1         1.2.2    1m   2021-07-02 08:45.44
@@ -236,8 +235,17 @@ You will use Bicep and PowerShell to create the resources needed:
 
    You need to grant the managed identity of AKS access to your Azure Container Registry so it can pull images. Run the following command.
 
+   ```shell
+   az aks update --name "<aksname>" --resource-group "<resource-group-name>" --attach-acr "<acrname>"
    ```
-   az aks update -n aks-dapr-mce123 -g rg-dapr-mce123 --attach-acr crdaprmce123
+
+8. Assign RBAC permissions to KeyVault
+
+   You will need to assign yourself access to the KeyVault so you can create secrets.
+
+   ```shell
+   az role assignment create --role "Key Vault Secrets Officer" --assignee "<user principal name>" --scope /subscriptions/<subscriptionId>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>
    ```
-4. Go to [assignment 1](Assignment01/README.md).
+
+8. Go to [assignment 1](Assignment01/README.md).
 
