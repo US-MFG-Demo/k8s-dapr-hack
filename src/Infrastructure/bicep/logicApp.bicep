@@ -1,7 +1,23 @@
 param longName string
 
+var connectionName = 'office365'
+
+resource logicAppConnection 'Microsoft.Web/connections@2016-06-01' = {
+    name: connectionName
+    location: resourceGroup().location
+    properties: {
+        displayName: 'emailSender@azure.com'
+        api: {
+            id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${resourceGroup().location}/managedApis/${connectionName}'
+        }
+    }
+}
+
 resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: 'logic-smtp-${longName}'
+  dependsOn: [
+      logicAppConnection
+  ]
   location: resourceGroup().location
   properties: {
     definition: {
@@ -74,9 +90,9 @@ resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
         '$connections': {
             value: {
                 office365: {
-                    connectionId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Web/connections/office365'
-                    connectionName: 'office365'
-                    id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/southcentralus/managedApis/office365'
+                    connectionId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Web/connections/${connectionName}'                                   
+                    connectionName: connectionName
+                    id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${resourceGroup().location}/managedApis/${connectionName}'
                 }
             }
         }
