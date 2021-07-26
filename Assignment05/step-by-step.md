@@ -11,7 +11,7 @@ Start by running the SMTP server:
 
 1. Start a MailDev SMTP server by entering the following command:
 
-   ```console
+   ```shell
    docker run -d -p 4000:80 -p 4025:25 --name dtc-maildev maildev/maildev:latest
    ```
 
@@ -25,19 +25,19 @@ If everything goes well, you should see some output like this:
 
 The container will keep running in the background. If you want to stop it, enter the following command:
 
-```console
+```shell
 docker stop dtc-maildev
 ```
 
 You can then start the container later by entering the following command:
 
-```console
+```shell
 docker start dtc-maildev
 ```
 
 When you are done with the class, you can remove it by entering the following command:
 
-```console
+```shell
 docker rm dtc-maildev -f
 ```
 
@@ -112,7 +112,7 @@ You will enhance the FineCollectionService so that it uses the Dapr SMTP output 
 
 1. Check that your code-changes are correct by building the code. Execute the following command in the terminal window:
 
-   ```console
+   ```shell
    dotnet build
    ```
 
@@ -173,7 +173,7 @@ You're going to start all the services now. Like before, you'll specify the cust
 
 1. Enter the following command to run the VehicleRegistrationService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id vehicleregistrationservice --app-port 6002 --dapr-http-port 3602 --dapr-grpc-port 60002 --components-path ../dapr/components dotnet run
    ```
 
@@ -181,7 +181,7 @@ You're going to start all the services now. Like before, you'll specify the cust
 
 1. Enter the following command to run the FineCollectionService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id finecollectionservice --app-port 6001 --dapr-http-port 3601 --dapr-grpc-port 60001 --components-path ../dapr/components dotnet run
    ```
 
@@ -189,7 +189,7 @@ You're going to start all the services now. Like before, you'll specify the cust
 
 1. Enter the following command to run the TrafficControlService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id trafficcontrolservice --app-port 6000 --dapr-http-port 3600 --dapr-grpc-port 60000 --components-path ../dapr/components dotnet run
    ```
 
@@ -197,7 +197,7 @@ You're going to start all the services now. Like before, you'll specify the cust
 
 1. Start the simulation:
 
-   ```console
+   ```shell
    dotnet run
    ```
 
@@ -231,7 +231,7 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
    version: v1
    metadata:
       - name: url
-        value: https://prod-18.southcentralus.logic.azure.com:443/workflows/e76d81048c3941f18638ab0055bba68a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8z3TLKcglxFwESf9HY_3pkViSk6fFR2m-db-BWobZFw
+        value: https://prod-18.southcentralus.logic.azure.com:443/workflows/e76d81048c3941f18638ab0055bba68a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8z3TLKcgFakekeyf9HY_3pkViSk6fFR2m-db-BWobZFw
    scopes:
    - finecollectionservice
    ```
@@ -261,7 +261,7 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
 
 4. Use the Azure Container Registry task to build your image from source. **Note the change in image tag**
 
-   ```
+   ```shell
    az acr build --registry crdaprusscdemo --image finecollectionservice:assignment05 .
    ```
 
@@ -276,7 +276,7 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
 
 6. Deploy the FineCollectionService image to the Azure Kubernetes Service.
 
-   ```
+   ```shell
    kubectl apply -f ./deploy/deploy.yaml
    ```
 

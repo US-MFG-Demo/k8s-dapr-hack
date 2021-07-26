@@ -29,6 +29,7 @@ spec:
     metadata:
       labels:
         app: finecollectionservice
+        aadpodidbinding: mi-aks-dapr-ussc-demo
       annotations:
         dapr.io/enabled: "true"
         dapr.io/app-id: "finecollectionservice"

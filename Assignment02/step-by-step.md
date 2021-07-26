@@ -32,7 +32,7 @@ You will use the Dapr CLI `run` command and specify all the options above on the
 
 4. Enter the following command to run the VehicleRegistrationService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id vehicleregistrationservice --app-port 6002 --dapr-http-port 3602 --dapr-grpc-port 60002 dotnet run
    ```
 
@@ -99,7 +99,7 @@ First you're going to change the code so it calls the Dapr sidecar:
 
 1. Check all your code-changes are correct by building the code:
 
-   ```console
+   ```shell
    dotnet build
    ```
 
@@ -107,7 +107,7 @@ First you're going to change the code so it calls the Dapr sidecar:
 
 1. Enter the following command to run the FineCollectionService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id finecollectionservice --app-port 6001 --dapr-http-port 3601 --dapr-grpc-port 60001 dotnet run
    ```
 
@@ -123,7 +123,7 @@ Now you're going to test the application from end-to-end:
 
 1. Enter the following command to run the TrafficControlService with a Dapr sidecar:
 
-1. ```console
+1. ```shell
    dotnet run
    ```
 
@@ -137,7 +137,7 @@ Now you're going to test the application from end-to-end:
 
 1. Start the simulation:
 
-   ```console
+   ```shell
    dotnet run
    ```
 
@@ -159,7 +159,7 @@ First stop the simulation:
 
 1. In the FineCollectionService terminal window, add a reference to the Dapr ASP.NET Core integration library:
 
-   ```console
+   ```shell
    dotnet add package Dapr.AspNetCore
    ```
 
@@ -218,7 +218,7 @@ Now the FineCollectionService is changed to use the Dapr SDK for service invocat
 
 1. Enter the following command to start the changed FineCollectionService again:
 
-   ```console
+   ```shell
    dapr run --app-id finecollectionservice --app-port 6001 --dapr-http-port 3601 --dapr-grpc-port 60001 dotnet run
    ```
 
@@ -228,7 +228,7 @@ The services are up & running. Now you're going to test this using the simulatio
 
 1. Start the simulation:
 
-   ```console
+   ```shell
    dotnet run
    ```
 
@@ -262,7 +262,7 @@ FineCollectionService & TrafficControlService to **port 3500**.
 
 2. Navigate to the src/VehicleRegistrationService directory & use the Azure Container Registry task to build your image from source.
 
-   ```
+   ```shell
    az acr build --registry crdaprusscdemo --image vehicleregistrationservice:assignment02 .
    ```
 
@@ -288,7 +288,7 @@ login server/repository:tag name to match your deployed Azure resources. Use the
 
 3. Deploy the VehicleRegistrationService image to the Azure Kubernetes Service. 
 
-   ```
+   ```shell
    kubectl apply -f ./deploy/deploy.yaml
    ```
 
@@ -298,7 +298,7 @@ login server/repository:tag name to match your deployed Azure resources. Use the
 
    **Example**
 
-   ```
+   ```csharp
    _httpClient.PostAsync("http://trafficcontrolservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io/v1.0/invoke/trafficcontrolservice/method/entrycam", message).Wait();
    ```
 

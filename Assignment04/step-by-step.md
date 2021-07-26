@@ -184,7 +184,7 @@ Now you need to register the new repository with the .NET Core dependency-inject
 
 1. Check that your code-changes are correct by building the code. Execute the following command in the terminal window:
 
-   ```console
+   ```shell
    dotnet build
    ```
 
@@ -204,7 +204,7 @@ Now, you'll test the update by running the application from end-to-end.
 
 1. Enter the following command to run the VehicleRegistrationService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id vehicleregistrationservice --app-port 6002 --dapr-http-port 3602 --dapr-grpc-port 60002 --components-path ../dapr/components dotnet run
    ```
 
@@ -212,7 +212,7 @@ Now, you'll test the update by running the application from end-to-end.
 
 1. Enter the following command to run the FineCollectionService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id finecollectionservice --app-port 6001 --dapr-http-port 3601 --dapr-grpc-port 60001 --components-path ../dapr/components dotnet run
    ```
 
@@ -220,7 +220,7 @@ Now, you'll test the update by running the application from end-to-end.
 
 1. Enter the following command to run the TrafficControlService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id trafficcontrolservice --app-port 6000 --dapr-http-port 3600 --dapr-grpc-port 60000 --components-path ../dapr/components dotnet run
    ```
 
@@ -228,7 +228,7 @@ Now, you'll test the update by running the application from end-to-end.
 
 1. Start the simulation:
 
-   ```console
+   ```shell
    dotnet run
    ```
 
@@ -242,7 +242,7 @@ The *behavior* of the application hasn't changed. But are the VehicleState entri
 
 1. Execute the following command to start the redis-cli inside the running `dapr_redis` container:
 
-   ```console
+   ```shell
    docker exec -it dapr_redis redis-cli
    ```
 
@@ -250,7 +250,7 @@ The *behavior* of the application hasn't changed. But are the VehicleState entri
 
 1. In the redis-cli enter the following command to get the list of keys of items stored in the redis cache:
 
-   ```console
+   ```shell
    keys *
    ```
 
@@ -258,7 +258,7 @@ The *behavior* of the application hasn't changed. But are the VehicleState entri
 
 1. Enter the following command in the redis-cli to get the data stored with this key (change the license-number to one in the list you see):
 
-   ```console
+   ```shell
    hgetall trafficcontrolservice||KL-495-J
    ```
 
@@ -334,7 +334,7 @@ In this step, you'll simplify state management with the Dapr SDK for .NET. You'l
 
 1. Check all your code-changes are correct by building the code. Execute the following command in the terminal window:
 
-   ```console
+   ```shell
    dotnet build
    ```
 
@@ -379,7 +379,7 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
 
 3. Navigate to the src/TrafficControlService directory & use the Azure Container Registry task to build your image from source. **Note the change in image tag**
 
-    ```
+    ```shell
     az acr build --registry crdaprusscdemo --image trafficcontrolservice:assignment04 .
     ```
 
@@ -394,7 +394,7 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
 
 5. Deploy the TrafficControlService image to the Azure Kubernetes Service.
 
-    ```
+    ```shell
     kubectl apply -f ./deploy/deploy.yaml
     ```
 

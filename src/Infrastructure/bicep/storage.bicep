@@ -12,12 +12,18 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
-var storageAccountContainerName = 'trafficcontrol'
+var storageAccountEntryCamContainerName = 'trafficcontrol-entrycam'
+var storageAccountExitCamContainerName = 'trafficcontrol-exitcam'
 
-resource storageAccountContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = {
-  name: '${storageAccount.name}/default/${storageAccountContainerName}'
+resource storageAccountEntryCamContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = {
+  name: '${storageAccount.name}/default/${storageAccountEntryCamContainerName}'
+}
+
+resource storageAccountExitCamContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = {
+  name: '${storageAccount.name}/default/${storageAccountExitCamContainerName}'
 }
 
 output storageAccountName string = storageAccount.name
-output storageAccountContainerName string = storageAccountContainerName
-output storageAccountKey string = listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value
+output storageAccountEntryCamContainerName string = storageAccountEntryCamContainerName
+output storageAccountExitCamContainerName string = storageAccountExitCamContainerName
+output storageAccountContainerKey string = listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value

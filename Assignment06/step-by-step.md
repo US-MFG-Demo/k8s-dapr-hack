@@ -27,13 +27,13 @@ In order to connect to Mosquitto, you need to pass in a custom configuration fil
 1. Start a Mosquitto MQTT container by entering the following command:
 **When running on Windows**:
 
-   ```console
+   ```shell
    docker run -d -p 1883:1883 -p 9001:9001 -v $pwd/:/mosquitto/config/ --name dtc-mosquitto eclipse-mosquitto
    ```
 
    **When running on Mac or Linux**:
 
-   ```console
+   ```shell
    docker run -d -p 1883:1883 -p 9001:9001 -v $(pwd)/:/mosquitto/config/ --name dtc-mosquitto eclipse-mosquitto
    ```
 
@@ -49,19 +49,19 @@ If everything goes well, you should see some output like this:
 
 The container will keep running in the background. If you want to stop it, enter the following command:
 
-```console
+```shell
 docker stop dtc-mosquitto
 ```
 
 You can then start the container later by entering the following command:
 
-```console
+```shell
 docker start dtc-mosquitto
 ```
 
 When you are done with the class, you can remove it by entering the following command:
 
-```console
+```shell
 docker rm dtc-mosquitto -f
 ```
 
@@ -141,7 +141,7 @@ In this step, you'll change the Camera Simulation so it sends MQTT messages inst
 
 1. Add a reference to the `System.Net.Mqtt` library:
 
-   ```console
+   ```shell
    dotnet add package System.Net.Mqtt --prerelease
    ```
 
@@ -218,7 +218,7 @@ It's time to wire up the new MQTT proxy to the Simulation service and remove the
 
 1. Check all your code changes are correct by building the code. Execute the following command in the terminal window:
 
-```console
+```shell
 dotnet build
 ```
 
@@ -238,7 +238,7 @@ You're going to start all the services now. You specify the custom components fo
 
 1. Enter the following command to run the VehicleRegistrationService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id vehicleregistrationservice --app-port 6002 --dapr-http-port 3602 --dapr-grpc-port 60002 --components-path ../dapr/components dotnet run
    ```
 
@@ -246,7 +246,7 @@ You're going to start all the services now. You specify the custom components fo
 
 1. Enter the following command to run the FineCollectionService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id finecollectionservice --app-port 6001 --dapr-http-port 3601 --dapr-grpc-port 60001 --components-path ../dapr/components dotnet run
    ```
 
@@ -254,7 +254,7 @@ You're going to start all the services now. You specify the custom components fo
 
 1. Enter the following command to run the TrafficControlService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id trafficcontrolservice --app-port 6000 --dapr-http-port 3600 --dapr-grpc-port 60000 --components-path ../dapr/components dotnet run
    ```
 
@@ -262,7 +262,7 @@ You're going to start all the services now. You specify the custom components fo
 
 1. Start the simulation:
 
-   ```console
+   ```shell
    dotnet run
    ```
 
@@ -270,7 +270,7 @@ You should see the same logs as before.
 
 To peak into the Mosquitto server, open a **new** terminal window and execute the following command:
 
-```console
+```shell
 docker logs dtc-mosquitto
 ```
 
@@ -283,19 +283,19 @@ You will connect to the server and see its logs:
 1. Run the following code to provision an IoT device identity to represent your simulation application as it writes to the IoT Hub.
    Change the "hub-name" to your IoT hub name
 
-   ```
+   ```shell
    az iot hub device-identity create --device-id simulation --hub-name iothub-dapr-ussc-demo
    ```
 
 2. Get the connection string for this device.
 
-   ```
+   ```shell
    az iot hub device-identity connection-string show --device-id simulation --hub-name iothub-dapr-ussc-demo 
    ```
 
 3. Add the NuGet package Microsoft.Azure.Devices.Client to the Simulation project.
 
-   ```
+   ```shell
    dotnet add package Microsoft.Azure.Devices.Client
    ```
 
@@ -339,13 +339,13 @@ You will connect to the server and see its logs:
 
 5. Get the connection strings for your event hubs (one for the **entrycam** EventHub & one for the **exitcam** EventHub). Customize for your deployment.
 
-   ```
+   ```shell
    az eventhubs eventhub authorization-rule keys list --eventhub-name entrycam --namespace-name ehn-dapr-ussc-demo-trafficcontrol --resource-group rg-dapr-workshop-ussc-demo --name iothubroutes_iothub-dapr-ussc-demo --query primaryConnectionString
    ```
 
 6. Get the storage account key for your storage account. Customize for your deployment
 
-   ```
+   ```shell
    az storage account keys list --account-name sadaprusscdemo --resource-group rg-dapr-workshop-ussc-demo --query [0].value
    ```
 
@@ -378,7 +378,7 @@ You will connect to the server and see its logs:
 
 9. Deploy your updated Dapr deployment files
 
-   ```
+   ```shell
    kubectl apply -f src/dapr/components
    ```
 
