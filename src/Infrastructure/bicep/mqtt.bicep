@@ -17,6 +17,9 @@ var eventHubEntryCamName = 'entrycam'
 
 resource eventHubEntryCam 'Microsoft.EventHub/namespaces/eventhubs@2021-01-01-preview' = {
   name: '${eventHubNamespace.name}/${eventHubEntryCamName}'
+  dependsOn: [
+    eventHubNamespace
+  ]
   properties: {
     partitionCount: 1
     messageRetentionInDays: 1
@@ -25,10 +28,16 @@ resource eventHubEntryCam 'Microsoft.EventHub/namespaces/eventhubs@2021-01-01-pr
 
 resource eventHubEntryCamConsumerGroup 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2021-01-01-preview' = {
   name: '${eventHubNamespace.name}/${eventHubEntryCamName}/trafficcontrolservice'
+  dependsOn: [
+    eventHubEntryCam
+  ]
 }
 
 resource eventHubEntryCamListenAuthorizationRule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2021-01-01-preview' = {
   name: '${eventHubEntryCam.name}/listen'
+  dependsOn: [
+    eventHubEntryCam
+  ]
   properties: {
     rights: [
       'Listen'
@@ -40,6 +49,9 @@ var eventHubExitCamName = 'exitcam'
 
 resource eventHubExitCam 'Microsoft.EventHub/namespaces/eventhubs@2021-01-01-preview' = {
   name: '${eventHubNamespace.name}/${eventHubExitCamName}'
+  dependsOn: [
+    eventHubNamespace
+  ]
   properties: {
     partitionCount: 1
     messageRetentionInDays: 1
@@ -48,10 +60,16 @@ resource eventHubExitCam 'Microsoft.EventHub/namespaces/eventhubs@2021-01-01-pre
 
 resource eventHubExitCamConsumerGroup 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2021-01-01-preview' = {
   name: '${eventHubNamespace.name}/${eventHubExitCamName}/trafficcontrolservice'
+  dependsOn: [
+    eventHubExitCam
+  ]
 }
 
 resource eventHubExitCamListenAuthorizationRule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2021-01-01-preview' = {
   name: '${eventHubExitCam.name}/listen'
+  dependsOn: [
+    eventHubExitCam
+  ]
   properties: {
     rights: [
       'Listen'
