@@ -15,30 +15,30 @@ Once you start creating the Azure resources you can move on to Assignment 1 whil
 
 1. Install all the pre-requisites listed above and make sure they're working fine
 
-- Git ([download](https://git-scm.com/))
-- .NET 5 SDK ([download](https://dotnet.microsoft.com/download/dotnet/5.0))
-- Visual Studio Code ([download](https://code.visualstudio.com/download)) with at least the following extensions installed:
-  - [C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)
-  - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
-- Docker for desktop ([download](https://www.docker.com/products/docker-desktop))
-- Dapr CLI and Dapr runtime ([instructions](https://docs.dapr.io/getting-started/install-dapr-selfhost/))
-- Install Azure CLI ([instructions]())
-  - Linux ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#linux))
-  - macOS ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos))
-  - Windows ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli))
-- Install Azure CLI Bicep tools ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-cli))
-- Install Bicep extension for VS Code ([instructions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep))
-- If you are on Windows, you may need a bash shell to run some of the commands. Use the [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+   - Git ([download](https://git-scm.com/))
+   - .NET 5 SDK ([download](https://dotnet.microsoft.com/download/dotnet/5.0))
+   - Visual Studio Code ([download](https://code.visualstudio.com/download)) with at least the following extensions installed:
+   - [C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)
+   - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+   - Docker for desktop ([download](https://www.docker.com/products/docker-desktop))
+   - Dapr CLI and Dapr runtime ([instructions](https://docs.dapr.io/getting-started/install-dapr-selfhost/))
+   - Install Azure CLI ([instructions]())
+   - Linux ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#linux))
+   - macOS ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos))
+   - Windows ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli))
+   - Install Azure CLI Bicep tools ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-cli))
+   - Install Bicep extension for VS Code ([instructions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep))
+   - If you are on Windows, you may need a bash shell to run some of the commands. Use the [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 
-Make sure you have at least the following versions installed. This workshop has been tested with the following versions:
+   Make sure you have at least the following versions installed. This workshop has been tested with the following versions:
 
-| Attribute            | Details |
-| -------------------- | ------- |
-| Dapr runtime version | v1.0.0  |
-| Dapr.NET SDK version | v1.0.0  |
-| Dapr CLI version     | v1.0.0  |
-| Platform             | .NET 5  |
-| azure-cli            | 2.24.0  |
+   | Attribute            | Details |
+   | -------------------- | ------- |
+   | Dapr runtime version | v1.0.0  |
+   | Dapr.NET SDK version | v1.0.0  |
+   | Dapr CLI version     | v1.0.0  |
+   | Platform             | .NET 5  |
+   | azure-cli            | 2.24.0  |
 
 2. Clone the Github repository to a local folder on your machine:
 
@@ -47,7 +47,7 @@ Make sure you have at least the following versions installed. This workshop has 
    ```
 Now we need to create the Azure resources will be using for the subsequent assignments. 
 
-You will use Bicep and PowerShell to create the resources needed:
+You will use Bicep and Azure CLI to create the resources needed:
 
 1. If you are using [Azure Cloud Shell](https://shell.azure.com)) then you can skip this step. Open the [terminal window](https://code.visualstudio.com/docs/editor/integrated-terminal) in VS Code and make sure you're logged in to Azure
 
@@ -66,7 +66,7 @@ You will use Bicep and PowerShell to create the resources needed:
    ```
    Copy your public SSH key string so you can configure the parameter file in the next step to use it. It can be found in the "id_rsa.pub" file that was created or updated by the `ssh-keygen` command.
 
-4. Modify the `src\Infrastructure\bicep\main.parameters.json` file so it contains the proper data for your deployment:
+4. Modify the `src/Infrastructure/bicep/main.parameters.json` file so it contains the proper data for your deployment:
 
    ```json
    {
@@ -88,10 +88,10 @@ You will use Bicep and PowerShell to create the resources needed:
    }
    ```
 
-3. Create a new resource group to deploy your Azure infrastructure into, by deploying the `src\Infrastructure\rg.bicep` file and store the name of the created resource group name in a variable. Make sure to replace the location parameter below with the proper Azure region that you want to use:
+3. Create a new resource group to deploy your Azure infrastructure into, by deploying the `src/Infrastructure/rg.bicep` file and store the name of the created resource group name in a variable. Make sure to replace the location parameter below with the proper Azure region that you want to use:
 
    ```shell
-   az deployment sub create --location "southcentralus" --template-file rg.bicep --parameters .\main.parameters.json --query "properties.outputs" --output yamlc
+   az deployment sub create --location "southcentralus" --template-file rg.bicep --parameters ./main.parameters.json --query "properties.outputs" --output yamlc
    ```
 
 4. The previous command should have ended with success, by displaying the name of the resource group that was created. Something similar to this:  
@@ -105,7 +105,7 @@ You will use Bicep and PowerShell to create the resources needed:
 5. Take note of the resource group name. You're now ready to create all the Azure resources under that resource group. To do that, run the following Azure CLI command:
 
    ```shell
-   az deployment group create --resource-group "rg-dapr-youruniqueid123" --template-file main.bicep --parameters .\main.parameters.json --query "properties.outputs" --output yamlc
+   az deployment group create --resource-group "rg-dapr-youruniqueid123" --template-file main.bicep --parameters ./main.parameters.json --query "properties.outputs" --output yaml
    ```
 
    **NOTE**: This is a long-running command and may take several minutes. You're encouraged to jump to the next lab while the command is creating all the Azure resources.
