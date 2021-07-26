@@ -4,10 +4,10 @@ param environment string
 param adminUsername string
 param publicSSHKey string
 
-var longName = '${appName}-${region}-${environment}'
+var longName = '${appName}-${environment}'
 
 module keyVaultModule 'keyVault.bicep' = {
-  name: 'keyVaultDeploy'
+  name: 'keyVaultDeploy'  
   params: {
     longName: longName
   }
@@ -94,3 +94,4 @@ output storageAccountExitCamContainerName string = storageAccountModule.outputs.
 output storageAccountKey string = storageAccountModule.outputs.storageAccountContainerKey
 output appInsightsName string = aksModule.outputs.appInsightsName
 output appInsightsInstrumentationKey string = aksModule.outputs.appInsightsInstrumentationKey
+
