@@ -22,18 +22,13 @@ Once you start creating the Azure resources you can move on to Assignment 1 whil
   - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 - Docker for desktop ([download](https://www.docker.com/products/docker-desktop))
 - Dapr CLI and Dapr runtime ([instructions](https://docs.dapr.io/getting-started/install-dapr-selfhost/))
-- Install Azure PowerShell ([instructions](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-6.2.1))
-- Install PowerShell [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) tools (this will be used to deploy Azure resources)
 - Install Azure CLI ([instructions]())
   - Linux ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#linux))
   - macOS ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos))
   - Windows ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli))
 - Install Azure CLI Bicep tools ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-cli))
 - Install Bicep extension for VS Code ([instructions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep))
-
-All scripts in the instructions are Powershell scripts. If you're working on a Mac, it is recommended to install Powershell for Mac:
-
-- Powershell for Mac ([instructions](https://docs.microsoft.com/nl-nl/powershell/scripting/install/installing-powershell-core-on-macos?view=powershell-7.1))
+- If you are on Windows, you may need a bash shell to run some of the commands. Use the [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 
 Make sure you have at least the following versions installed. This workshop has been tested with the following versions:
 
@@ -43,7 +38,7 @@ Make sure you have at least the following versions installed. This workshop has 
 | Dapr.NET SDK version | v1.0.0  |
 | Dapr CLI version     | v1.0.0  |
 | Platform             | .NET 5  |
-| Powershell           | >7.0.0  |
+| azure-cli            | 2.24.0  |
 
 2. Clone the Github repository to a local folder on your machine:
 
