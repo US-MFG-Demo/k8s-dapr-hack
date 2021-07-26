@@ -239,5 +239,6 @@ You will use Bicep and PowerShell to create the resources needed:
    ```
    az aks update -n aks-dapr-mce123 -g rg-dapr-mce123 --attach-acr crdaprmce123
    ```
-4. Go to [assignment 1](Assignment01/README.md).
+8. Go to [assignment 1](../Assignment01/README.md).
+
 
