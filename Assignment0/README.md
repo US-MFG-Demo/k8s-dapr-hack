@@ -28,7 +28,7 @@ Once you start creating the Azure resources you can move on to Assignment 1 whil
    - Windows ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli))
    - Install Azure CLI Bicep tools ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-cli))
    - Install Bicep extension for VS Code ([instructions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep))
-   - If you are on Windows, you may need a bash shell to run some of the commands. Use the [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+   - If you are on Windows, you may need a bash shell to run some of the commands. Use the [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or the [Git Bash](https://git-scm.com/downloads).
 
    Make sure you have at least the following versions installed. This workshop has been tested with the following versions:
 
