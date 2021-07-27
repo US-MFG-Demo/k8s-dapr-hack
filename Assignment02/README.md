@@ -1,6 +1,6 @@
 # Assignment 2 - Add Dapr service invocation
 
-In this assignment, you're going to add Dapr into the mix. You will use the Dapr **service invocation** building block.
+In this assignment, you're going to add Dapr into the mix, using the Dapr **service invocation** building block.
 
 ## Dapr service invocation building block
 
@@ -51,4 +51,4 @@ To leverage step-by-step instructions to achieve the goals, open the [step-by-st
 
 Once you've finished this assignment, stop all the running processes and close all the terminal windows in VS Code. Now proceed to the next assignment.
 
-Go to [assignment 2A](../Assignment02A/README.md).
+Go to [assignment 2](../Assignment02/README.md).
