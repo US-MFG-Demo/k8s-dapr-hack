@@ -3,6 +3,8 @@
 Welcome to the step-by-step instructions for assignment 2.
 
  > Be sure that Docker Desktop is running
+
+ > Be sure your AKS cluster has been deployed and dapr has been initialized in it.
 ## Step 1: Start the VehicleRegistrationService with Dapr
 
 
@@ -210,7 +212,7 @@ Now you'll change the code in the FineCollectionService to use the Dapr SDK `Htt
 
 Now the FineCollectionService is changed to use the Dapr SDK for service invocation. Let's test this.
 
-1. If you followed the instructions in this assignment, the VehicleRegistration, TrafficControl, and Simulation services are still running.
+1. If you followed the instructions in this assignment, the VehicleRegistration and  TrafficControl services are still running.
 
 1. Open the terminal window in VS Code in which the FineCollectionService was running.
 
@@ -224,7 +226,7 @@ Now the FineCollectionService is changed to use the Dapr SDK for service invocat
 
 The services are up & running. Now you're going to test this using the simulation.
 
-1. Open a **new** terminal window in VS Code and change the current folder to `src/Simulation`.
+1. Open a **new** terminal window (or the window you had used previously) in VS Code and change the current folder to `src/Simulation`.
 
 1. Start the simulation:
 
@@ -257,16 +259,16 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
 1. By default, Dapr sidecars run on **port 3500** when deployed to AKS. This means you will need to change the port numbers in the
 FineCollectionService & TrafficControlService to **port 3500**.
 
-   - src/FineCollectionService/Proxies/VehicleRegistrationService.cs
-   - src/TrafficControlService/Controllers/TrafficController.cs
-
-2. Navigate to the src/VehicleRegistrationService directory & use the Azure Container Registry task to build your image from source.
+   - `src/FineCollectionService/Proxies/VehicleRegistrationService.cs`
+   - `src/TrafficControlService/Controllers/TrafficController.cs`
+   
+2. Navigate to the `src/VehicleRegistrationService` directory & use the Azure Container Registry task to build your image from source.
 
    ```
    az acr build --registry crdaprusscdemo --image vehicleregistrationservice:assignment02 .
    ```
 
-2. Modify the ./deploy/deploy.yaml file with the custom settings for your deployment to Azure. You will need to get the DNS name (found in the
+2. Modify the `./deploy/deploy.yaml` file with the custom settings for your deployment to Azure. You will need to get the DNS name (found in the
 new resource group that AKS auto-generated, look for a resource group that starts with "MC_") and Azure Container Registry 
 login server/repository:tag name to match your deployed Azure resources. Use these to replace the "Ingress.spec.rules.host" and the 
 "Deployment.spec.template.spec.containers.image" in the ./deploy/deploy.yaml file before running the "apply" command.

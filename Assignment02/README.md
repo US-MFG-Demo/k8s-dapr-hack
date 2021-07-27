@@ -1,6 +1,7 @@
 # Assignment 2 - Add Dapr service invocation
 
-In this assignment, you're going to add Dapr into the mix. You will use the Dapr **service invocation** building block.
+In this assignment, you're going to add Dapr into the mix, using the Dapr **service invocation** building block.
+You'll also get the project to run in Azure.
 
 ## Dapr service invocation building block
 
@@ -32,6 +33,7 @@ To complete this assignment, you must achieve the following goals:
 
 - The VehicleRegistrationService and FineCollectionService must each run with a Dapr sidecar.
 - The FineCollectionService must use the Dapr service invocation building block to call the `/vehicleinfo/{licensenumber}` endpoint on the VehicleRegistrationService.
+- Deploy the services to Azure Kubernetes Service and demonstrate it's running without issues.
 
 This assignment targets the operations labeled as **number 1** in the end-state setup:
 
@@ -51,4 +53,4 @@ To leverage step-by-step instructions to achieve the goals, open the [step-by-st
 
 Once you've finished this assignment, stop all the running processes and close all the terminal windows in VS Code. Now proceed to the next assignment.
 
-Go to [assignment 2A](../Assignment02A/README.md).
+Go to [assignment 2](../Assignment02/README.md).
