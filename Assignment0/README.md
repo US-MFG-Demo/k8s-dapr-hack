@@ -8,12 +8,12 @@ Once you start creating the Azure resources you can move on to Assignment 1 whil
 ## Step 1. Install pre-requisites
 
 1. Make sure you have access to an Azure Subscription as a contributor where you can deploy resources to.
-- Access to an Azure subscription with Contributor access
+   - Access to an Azure subscription with Contributor access
    - If you don't have one, [Sign Up for Azure HERE](https://azure.microsoft.com/en-us/free/)
    - If you already have one, make sure you have at least Contributor access ([instructions](https://docs.microsoft.com/en-us/azure/role-based-access-control/check-access)) 
      - Your IT organization may have given Contributor access to a resource group only, not the entire subscription. If that's the case, take note of that resource group name and make sure you have Contributor access to it, using the instructions linked
-
-1. Install all the pre-requisites listed above and make sure they're working fine
+  
+1. Install all the pre-requisites listed below and make sure they're working fine
 
    - Git ([download](https://git-scm.com/))
    - .NET 5 SDK ([download](https://dotnet.microsoft.com/download/dotnet/5.0))
@@ -40,11 +40,13 @@ Once you start creating the Azure resources you can move on to Assignment 1 whil
    | Platform             | .NET 5  |
    | azure-cli            | 2.24.0  |
 
-2. Clone the Github repository to a local folder on your machine:
+1. Clone the Github repository to a local folder on your machine:
 
    ```shell
-   git clone https://github.com/robvet/dapr-workshop.git
+   git clone https://github.com/usri/k8s-dapr-hack
    ```
+
+## Step 2. Create Azure Resources
 Now we need to create the Azure resources will be using for the subsequent assignments. 
 
 You will use Bicep and Azure CLI to create the resources needed:
@@ -54,19 +56,31 @@ You will use Bicep and Azure CLI to create the resources needed:
    ```shell
    az login
    ```
-2. Make sure you have selected the subscription you want to work in. Replace the Xs with your subscription GUID or subscription name:
+1. Make sure you have selected the subscription you want to work in. Replace the Xs with your subscription GUID or subscription name:
 
    ```shell
    az account set --subscription "xxxx-xxxx-xxxx-xxxx"
    ```
-3. Generate an SSH key pair if you don't already have one.
+1. Generate an SSH key pair if you don't already have one.
 
    ```shell
    ssh-keygen -t rsa -b 2048
    ```
    Copy your public SSH key string so you can configure the parameter file in the next step to use it. It can be found in the "id_rsa.pub" file that was created or updated by the `ssh-keygen` command.
 
-4. Modify the `src/Infrastructure/bicep/main.parameters.json` file so it contains the proper data for your deployment:
+1. The application were are deploying into our kuberentes cluster use PodIdentity which is currently in public preview so we will need run the following commands to enable this feature before we create the cluster.
+   
+   **NOTE**  Public preview features should NOT be used in production environments.
+
+   ```shell
+   az feature register --name EnablePodIdentityPreview --namespace Microsoft.ContainerService
+
+   az extension add --name aks-preview
+
+   az extension update --name aks-preview   
+   ```
+
+1. Modify the `src/Infrastructure/bicep/main.parameters.json` file so it contains the proper data for your deployment:
 
    ```json
    {
@@ -88,13 +102,14 @@ You will use Bicep and Azure CLI to create the resources needed:
    }
    ```
 
-3. Create a new resource group to deploy your Azure infrastructure into, by deploying the `src/Infrastructure/rg.bicep` file and store the name of the created resource group name in a variable. Make sure to replace the location parameter below with the proper Azure region that you want to use:
+1. Create a new resource group to deploy your Azure infrastructure into, by deploying the `src/Infrastructure/bicep/rg.bicep` file and store the name of the created resource group name in a variable. Make sure to replace the location parameter below with the proper Azure region that you want to use:
 
    ```shell
+   cd .\src\Infrastructure\bicep\
    az deployment sub create --location "southcentralus" --template-file rg.bicep --parameters ./main.parameters.json --query "properties.outputs" --output yamlc
    ```
 
-4. The previous command should have ended with success, by displaying the name of the resource group that was created. Something similar to this:  
+1. The previous command should have ended with success, by displaying the name of the resource group that was created. Something similar to this:  
 
    ```yaml
    resourceGroupName:
@@ -102,7 +117,7 @@ You will use Bicep and Azure CLI to create the resources needed:
    value: rg-dapr-youruniqueid123
    ```
 
-5. Take note of the resource group name. You're now ready to create all the Azure resources under that resource group. To do that, run the following Azure CLI command:
+1. Take note of the resource group name. You're now ready to create all the Azure resources under that resource group. To do that, run the following Azure CLI command:
 
    ```shell
    az deployment group create --resource-group "rg-dapr-youruniqueid123" --template-file main.bicep --parameters ./main.parameters.json --query "properties.outputs" --output yaml
@@ -173,7 +188,7 @@ You will use Bicep and Azure CLI to create the resources needed:
       value: sadaprmce123
    ```
 
-5. Run the following command to get the AKS credentials for your cluster.
+1. Run the following command to get the AKS credentials for your cluster.
 
    ```shell
    az aks get-credentials --name "<aksname>" --resource-group "<resource-group-name>"
@@ -192,7 +207,8 @@ You will use Bicep and Azure CLI to create the resources needed:
    *         aks-dapr-mce123      aks-dapr-mce123      clusterUser_rg-dapr-mce123_aks-dapr-mce123
    ```
 
-6. Install Dapr in your cluster
+   
+1. Install Dapr in your cluster
 
    Run the following command to initialize Dapr in your Kubernetes cluster using your current context.
 
@@ -226,7 +242,7 @@ You will use Bicep and Azure CLI to create the resources needed:
    dapr-placement-server  dapr-system  True     Running  1         1.2.2    1m   2021-07-02 08:45.45
    ```
 
-7. Assign RBAC permissions to AKS
+1. Assign RBAC permissions to AKS
 
    You need to grant the managed identity of AKS access to your Azure Container Registry so it can pull images. Run the following command.
 
@@ -234,12 +250,19 @@ You will use Bicep and Azure CLI to create the resources needed:
    az aks update --name "<aksname>" --resource-group "<resource-group-name>" --attach-acr "<acrname>"
    ```
 
-8. Assign RBAC permissions to KeyVault
+1. Assign RBAC permissions to KeyVault
 
    You will need to assign yourself access to the KeyVault so you can create secrets.
 
    ```shell
    az role assignment create --role "Key Vault Secrets Officer" --assignee "<user principal name>" --scope /subscriptions/<subscriptionId>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>
    ```
-8. Go to [assignment 1](../Assignment01/README.md).
+
+1. Assign Managed Identity to KeyVault
+
+   ```shell
+   az role assignment create --role "Key Vault Secrets User" --assignee "<manged identity client id>" --scope /subscriptions/<subscriptionId>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>
+   ```
+
+1. Go to [assignment 1](../Assignment01/README.md).
 

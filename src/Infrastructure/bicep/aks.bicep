@@ -30,19 +30,6 @@ resource aksAzurePolicy 'Microsoft.Authorization/policyAssignments@2019-09-01' =
   }  
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' existing = {
-  name: keyVaultName  
-}
-
-resource aksUserAssignedManagedIdentityKeyVaultSecretsUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-preview' = {
-  name: guid(resourceGroup().name, aksUserAssignedManagedIdentity.id, 'Key Vault Secrets User')
-  scope: keyVault
-  properties: {
-    principalId: aksUserAssignedManagedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(subscription().subscriptionId, 'Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
-  }  
-}
-
 resource aks 'Microsoft.ContainerService/managedClusters@2021-03-01' = {
   name: 'aks-${longName}'
   location: resourceGroup().location

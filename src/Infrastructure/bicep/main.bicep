@@ -95,4 +95,4 @@ output storageAccountExitCamContainerName string = storageAccountModule.outputs.
 output storageAccountKey string = storageAccountModule.outputs.storageAccountContainerKey
 output appInsightsName string = aksModule.outputs.appInsightsName
 output appInsightsInstrumentationKey string = aksModule.outputs.appInsightsInstrumentationKey
-
+output keyVaultResourceId string = keyVaultModule.outputs.keyVaultResourceId
