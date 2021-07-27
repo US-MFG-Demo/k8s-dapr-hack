@@ -4,7 +4,6 @@ Welcome to the step-by-step instructions for assignment 2.
 
  > Be sure that Docker Desktop is running
 
- > Be sure your AKS cluster has been deployed and dapr has been initialized in it.
 ## Step 1: Start the VehicleRegistrationService with Dapr
 
 
