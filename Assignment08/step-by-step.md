@@ -25,21 +25,21 @@ to an Azure Container Registry. The easiest way to do that is to use [ACR tasks]
 
 1. 	Navigate to the src/VehicleRegistrationService directory & use the Azure Container Registry task to build your image from source.
 
-		```shell
-		az acr build --registry <container-registry-name> --image vehicleregistrationservice:assignment08 .
-		```
+    ```shell
+    az acr build --registry <container-registry-name> --image vehicleregistrationservice:assignment08 .
+    ```
 
 1. 	Navigate to the src/TrafficControlService directory & use the Azure Container Registry task to build your image from source.
 
-		```shell
-		az acr build --registry <container-registry-name> --image trafficcontrolservice:assignment08 .
-		```
+    ```shell
+    az acr build --registry <container-registry-name> --image trafficcontrolservice:assignment08 .
+    ```
 
 1. 	Navigate to the src/FineCollectionService directory & use the Azure Container Registry task to build your image from source.
-
-		```shell
-		az acr build --registry <container-registry-name> --image trafficcontrolservice:assignment08 .		
-		```
+  
+    ```shell
+    az acr build --registry <container-registry-name> --image trafficcontrolservice:assignment08 .		
+    ```
 
 ## Step 3: Deploy container images to Azure Kubernetes Service
 
@@ -49,53 +49,53 @@ to reference your container registry path & AKS ingress.
 
 1.	Open the `src/FineCollectionService/deploy/deploy.yaml` file and update the container registry name to be the one you have deployed.
 
-		```yaml
-		spec:
+    ```yaml
+    spec:
       containers:
       - name: finecollectionservice
         image: <container-registry-name>.azurecr.io/finecollectionservice:assignment08
-		```
+    ```
 
 1.	Modify the ingress host to match your AKS instance's HTTP application routing domain. You can query for this if you don't have it.
 
-		```shell
-		az aks show --resource-group <resource-group-name> --name <aks-name> --query="addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName"
-		```
+    ```shell
+    az aks show --resource-group <resource-group-name> --name <aks-name> --query="addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName"
+    ```
 
-		```shell
-		"e13e6fb6d2534a41ae60.southcentralus.aksapp.io"
-		```
+    ```shell
+    "e13e6fb6d2534a41ae60.southcentralus.aksapp.io"
+    ```
 
-		```yaml
-		spec:
-		rules:
-		- host: finecollectionservice.<aks-http-application-routing-zone-name>
-		```
-
-		Repeat these steps for the `TrafficControlService` and the `VehicleRegistrationService`.
+    ```yaml
+    spec:
+    rules:
+    - host: finecollectionservice.<aks-http-application-routing-zone-name>
+    ```
+    
+    Repeat these steps for the `TrafficControlService` and the `VehicleRegistrationService`.
 
 1. 	Deploy your new services to AKS. From the root of each service's application code directory, run the following.
 
-		```shell
-		kubectl apply -f ./deploy/deploy.yaml
-		```
+    ```shell
+    kubectl apply -f ./deploy/deploy.yaml
+    ```
 
-		Repeat these steps for the `TrafficControlService` and the `VehicleRegistrationService`.
+    Repeat these steps for the `TrafficControlService` and the `VehicleRegistrationService`.
 
 1.	Verify your services are running (it may take a little while for all the services to finish starting up). You may see
 		a few different pods running in the default namespace in addition to your services (and the unique identifiers on the
 		end of the services will be different).
 
-		```shell
-		kubectl get pods
-		```
+    ```shell
+    kubectl get pods
+    ```
 
-		```shell
-		NAME                                          READY   STATUS             RESTARTS   AGE  
-		finecollectionservice-7f76f68547-d98gc        2/2     Running            0          4d18h
-		trafficcontrolservice-749ffcf4bb-crx54        2/2     Running            0          4d19h
-		vehicleregistrationservice-65c9cf6cdc-s7c4s   2/2     Running            0          4d19h
-		```
+    ```shell
+    NAME                                          READY   STATUS             RESTARTS   AGE  
+    finecollectionservice-7f76f68547-d98gc        2/2     Running            0          4d18h
+    trafficcontrolservice-749ffcf4bb-crx54        2/2     Running            0          4d19h
+    vehicleregistrationservice-65c9cf6cdc-s7c4s   2/2     Running            0          4d19h
+    ```
 
 ## Step 4: Run Simulation application
 
