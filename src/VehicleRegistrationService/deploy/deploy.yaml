@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
       - name: vehicleregistrationservice
-        image: crdaprusscdemo.azurecr.io/vehicleregistrationservice:assignment02
+        image: crdaprusscdemo.azurecr.io/vehicleregistrationservice:assignment08
         ports:
         - containerPort: 6002
         imagePullPolicy: Always

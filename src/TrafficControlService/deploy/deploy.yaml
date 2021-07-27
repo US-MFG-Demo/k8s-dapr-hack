@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
       - name: trafficcontrolservice
-        image: crdaprusscdemo.azurecr.io/trafficcontrolservice:assignment02
+        image: crdaprusscdemo.azurecr.io/trafficcontrolservice:assignment08
         ports:
         - containerPort: 6000
         imagePullPolicy: Always
