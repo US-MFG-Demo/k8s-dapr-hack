@@ -26,7 +26,7 @@ In the example, you will use RabbitMQ as the message broker for the Dapr pub/sub
 
 1. Start a container instance of a RabbitMQ message broker by entering the following command:
 
-   ```console
+   ```shell
    docker run -d -p 5672:5672 -p 15672:15672 --name dtc-rabbitmq rabbitmq:3-management
    ```
 
@@ -40,19 +40,19 @@ If all goes well, you should see some output like this:
 
 The container will keep running in the background. If you want to stop it, enter the following command:
 
-```console
+```shell
 docker stop dtc-rabbitmq
 ```
 
 You can later restart the container by entering the following command:
 
-```console
+```shell
 docker start dtc-rabbitmq
 ```
 
 Later on, when you're dong with this class, you can remove the running container by entering the following command:
 
-```console
+```shell
 docker rm dtc-rabbitmq -f
 ```
 
@@ -142,7 +142,7 @@ Keep in mind that TrafficControlService is no longer coupled to FineCollectionSe
 
 1. Check all your code-changes are correct by building the code. Open the terminal window in VS Code, make sure the current folder is `src/TrafficControlService`, and execute the following command:
 
-   ```console
+   ```shell
    dotnet build
    ```
 
@@ -206,7 +206,7 @@ Now the FineCollectionService is ready to receive published messages through Dap
 
 1. Check all your code-changes are correct by building the code. Execute the following command in the terminal window:
 
-   ```console
+   ```shell
    dotnet build
    ```
 
@@ -228,7 +228,7 @@ You're going to start the application, service-by-service. While doing so, you'l
 
 1. Enter the following command to run the VehicleRegistrationService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id vehicleregistrationservice --app-port 6002 --dapr-http-port 3602 --dapr-grpc-port 60002 --components-path ../dapr/components dotnet run
    ```
 
@@ -245,7 +245,7 @@ You're going to start the application, service-by-service. While doing so, you'l
 
 1. Enter the following command to run the FineCollectionService, an accompanying  Dapr sidecar, and the RabbitMQ component:
 
-   ```console
+   ```shell
    dapr run --app-id finecollectionservice --app-port 6001 --dapr-http-port 3601 --dapr-grpc-port 60001 --components-path ../dapr/components dotnet run
    ```
 
@@ -260,7 +260,7 @@ You're going to start the application, service-by-service. While doing so, you'l
 
 1. Enter the following command to run the TrafficControlService with a Dapr sidecar:
 
-   ```console
+   ```shell
    dapr run --app-id trafficcontrolservice --app-port 6000 --dapr-http-port 3600 --dapr-grpc-port 60000 --components-path ../dapr/components dotnet run
    ```
 
@@ -275,13 +275,13 @@ You're going to start the application, service-by-service. While doing so, you'l
 
 1. Start the simulation:
 
-   ```console
+   ```shell
    dotnet run
    ```
 
 You should see the same logs as before. As well, the application behavior is exactly the same. However, if you look closely at the Dapr logs for FineCollectionService (the *second* terminal window), you should see something like this:
 
-```console
+```shell
 time="2021-02-27T16:46:02.5989612+01:00" level=info msg="app is subscribed to the following topics: [collectfine] through pubsub=pubsub" app_id=finecollectionservice instance=EDWINW01 scope=dapr.runtime type=log ver=1.0.0
 ```
 
@@ -324,7 +324,7 @@ The other approach to subscribing to pub/sub events is to do it programmatically
 
 1. Check all your code-changes are correct by building the code. Execute the following command in the terminal window:
 
-   ```console
+   ```shell
    dotnet build
    ```
 
@@ -332,7 +332,7 @@ The other approach to subscribing to pub/sub events is to do it programmatically
 
 1. Start the updated FineCollectionService:
 
-   ```console
+   ```shell
    dapr run --app-id finecollectionservice --app-port 6001 --dapr-http-port 3601 --dapr-grpc-port 60001 --components-path ../dapr/components dotnet run
    ```
 
@@ -346,7 +346,7 @@ In this step, you'll simplify pub/sub messaging with the Dapr SDK for .NET. Firs
 
 1. Add a reference to the Dapr ASP.NET Core integration package:
 
-   ```console
+   ```shell
    dotnet add package Dapr.AspNetCore
    ```
 
@@ -397,7 +397,7 @@ In this step, you'll simplify pub/sub messaging with the Dapr SDK for .NET. Firs
 
 1. Check all your code-changes are correct by building the code. Execute the following command in the terminal window:
 
-   ```console
+   ```shell
    dotnet build
    ```
 
@@ -478,7 +478,7 @@ Now you need to make sure that Dapr is aware of this controller and knows the pu
 
 1. Check all your code-changes are correct by building the code. Execute the following command in the terminal window:
 
-   ```console
+   ```shell
    dotnet build
    ```
 
@@ -547,7 +547,7 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
 
 1. Navigate to the src/TrafficControlService directory & use the Azure Container Registry task to build your image from source. **Note the change in image tag**
 
-   ```
+   ```shell
    az acr build --registry crdaprusscdemo --image trafficcontrolservice:assignment03 .
    ```
 
@@ -562,7 +562,7 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
 
 3. Deploy the TrafficControlService image to the Azure Kubernetes Service.
 
-   ```
+   ```shell
    kubectl apply -f ./deploy/deploy.yaml
    ```
 
