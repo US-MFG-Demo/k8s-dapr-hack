@@ -1,9 +1,8 @@
 # Assignment 4 - Add Dapr state management
 ## Assignment goals
 
-In this assignment, you'll evolve the TrafficControl application to leverage the Dapr state management building block. Once configured, it'll store the vehicle state as a car passes through the entry-point camera. The operation takes place in the TrafficControlService as shown below:
+In this assignment, you'll evolve the TrafficControl application to leverage the Dapr state management building block. Once configured, it'll store the vehicle state as a car passes through the entry-point camera. The operation takes place in the TrafficControlService.
 
-<img src="img/state-management-operation.png" style="zoom: 67%;;padding-top: 25px;" />
 ## Step 1: Use the Dapr state management building block
 
 First, you need to update the existing state management configuration file:
@@ -280,6 +279,10 @@ In this step, you'll simplify state management with the Dapr SDK for .NET. You'l
 
 1. Add a using statement for `Dapr.Client`.
 
+    ```csharp
+    using Dapr.Client;
+    ```
+
 1. Change all occurrences of `HttpClient` to `DaprClient` and rename the private field `_httpClient` to `_daprClient`.
 
 1. Replace the implementation of the `GetVehicleStateAsync` method with the following code:
@@ -342,16 +345,11 @@ In this step, you'll simplify state management with the Dapr SDK for .NET. You'l
 
 Now you're ready to test the application. Just repeat steps 2a and 2b.
 
-## Step 4: Deploy to Azure Kubernetes Service
+## Step 4: Use Azure Cache for Redis as state store
 
-Use Azure Container Registry Tasks to have the Azure Container Registry build & store your container image.
+Now, you can also use Azure Cache for Redis instead of the default state store. This will require no code changes, similar to replacing *RabbitMq* with Azure Service Bus in Assignment 3 required no code changes either. 
 
-1. By default, Dapr sidecars run on **port 3500** when deployed to AKS. This means you will need to change the port numbers in the
-   TrafficControlService to **port 3500**.
-
-   - src/TrafficControlService/Repositories/DaprVehicleStateRepository.cs
-
-2. Update the src/dapr/components/statestore.yaml file with the key/value pairs for your Azure Redis Cache instance. You can find these on the Overview blade
+1. Update the `src/dapr/components/statestore.yaml` file with the key/value pairs for your Azure Redis Cache instance. You can find these on the Overview blade
    of your Azure Redis Cache instance. Make sure you add the **6380** port number after the host URI.
 
     **Example:**
@@ -359,44 +357,48 @@ Use Azure Container Registry Tasks to have the Azure Container Registry build & 
     apiVersion: dapr.io/v1alpha1
     kind: Component
     metadata:
-    name: statestore
-    namespace: default
+      name: statestore
+      namespace: default
     spec:
-    type: state.redis
-    version: v1
+      type: state.redis
+      version: v1
     metadata:
     - name: redisHost
-        value: redis-dapr-ussc-demo.redis.cache.windows.net:6380
+      value: redis-dapr-ussc-demo.redis.cache.windows.net:6380
     - name: redisPassword
-        value: qu4qw8bFakeKey7KVrBYFFakeKey+v3raFBNA3M=
+      value: qu4qw8bFakeKey7KVrBYFFakeKey+v3raFBNA3M=
     - name: actorStateStore
-        value: true
+      value: true
     - name: enableTLS
-        value: true
+      value: true
     scopes:
     - trafficcontrolservice
     ```
+    > You can also obtain the Azure Redis Cache instance details using AZ CLI:
 
-3. Navigate to the src/TrafficControlService directory & use the Azure Container Registry task to build your image from source. **Note the change in image tag**
+    Host name and port:
 
-    ```shell
-    az acr build --registry crdaprusscdemo --image trafficcontrolservice:assignment04 .
+    ```
+    az redis show --name <redis cache name> -g <resource group> --query "[hostName,sslPort]"
     ```
 
-4. Update the src/TrafficControlService/deploy/deploy.yaml file with the new image tab.
+    Redis passoword:
 
-    ```yaml
-    spec:
-        containers:
-        - name: trafficcontrolservice
-          image: crdaprusscdemo.azurecr.io/trafficcontrolservice:assignment04
+    ```
+    az redis list-keys --name redis-dapr-mce123 -g rg-dapr-mce123 --query "primaryKey" -o tsv
     ```
 
-5. Deploy the TrafficControlService image to the Azure Kubernetes Service.
+    Now you're ready to test the application that is now using Azure Redis Cache. Just repeat steps 2a and 2b.
 
-    ```shell
-    kubectl apply -f ./deploy/deploy.yaml
-    ```
+2. You can now go on the Azure Portal and see that the key/value pairs are now stored in Azure Redis Cache:
+
+    On the portal, select the Redis Cache resource and click on "Console"
+
+    <img src="img/redis-cache-console-link.png" style="zoom: 77%;padding-top: 30px;" />
+
+    You should see the keys stored in Azure Redis Cache:
+
+    <img src="img/redis-cache-console-results.png" style="zoom: 87%;padding-top: 30px;" />
 
 ## Next assignment
 
