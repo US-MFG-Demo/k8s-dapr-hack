@@ -24,12 +24,12 @@ To complete this assignment, you must reach the following goals:
 
 1. The TrafficControlService sends `SpeedingViolation` messages using the Dapr pub/sub building block.
 1. The FineCollectionService receives `SpeedingViolation` messages using the Dapr pub/sub building block.
-1. RabbitMQ will be used as pub/sub message broker that runs as part of the solution in a Docker container.
-1. Azure Service Bus can be substituted as a message broker without code changes.
+1. Use RabbitMQ as pub/sub message broker that runs as part of the solution in a Docker container.
+1. Replace it with Azure Service Bus as a message broker without code changes.
 
 This assignment targets the operations labeled as **number 2** in the end-state setup:
 
-<img src="../img/dapr-setup.png" style="zoom: 67%;" />
+<img src="img/dapr-setup-assignment03.png" style="zoom: 67%;" />
 
 ## DIY instructions
 
