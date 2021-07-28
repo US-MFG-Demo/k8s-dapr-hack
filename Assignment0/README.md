@@ -12,10 +12,10 @@ In this assignment, you'll install the pre-requisites tools and software as well
 1. To start, you'll need access to an Azure Subscription:
 
    - If you don't have one, [Sign Up for an Azure account](https://azure.microsoft.com/en-us/free/).
-   - If you already have an Azure account, make sure you have at least `Contributor` access ([instructions](https://docs.microsoft.com/en-us/azure/role-based-access-control/check-access)) for a resource group in which you'll provision Azure resources.
-     
+   - If you already have an Azure account, make sure you have at least [Contributor access instructions](https://docs.microsoft.com/azure/role-based-access-control/check-access)) for the resource group in which you'll provision Azure resources.
+        
 > [!IMPORTANT]
-> Your IT organization may provide you access to an Azure resource group only, not the entire subscription. If that's the case, take note of that resource group name and make sure you have `Contributor` access to it, using the instructions linked
+> Your IT organization may provide you access to an Azure resource group, but not the entire subscription. If that's the case, take note of that resource group name and make sure you have `Contributor` access to it, using the instructions mentioned above.
   
 1. Install all the pre-requisites listed below and make sure they're working fine
 
@@ -24,8 +24,8 @@ In this assignment, you'll install the pre-requisites tools and software as well
    - Visual Studio Code ([download](https://code.visualstudio.com/download)) with at least the following extensions installed:
      - [C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)
      - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
-     - Docker for desktop ([download](https://www.docker.com/products/docker-desktop))
-     - Dapr CLI and Dapr runtime ([instructions](https://docs.dapr.io/getting-started/install-dapr-selfhost/))
+   - Docker for desktop ([download](https://www.docker.com/products/docker-desktop))
+   - Dapr CLI and Dapr runtime ([instructions](https://docs.dapr.io/getting-started/install-dapr-selfhost/))
    - Install Azure CLI ([instructions]())
      - Linux ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#linux))
      - macOS ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos))
@@ -35,7 +35,8 @@ In this assignment, you'll install the pre-requisites tools and software as well
    
   - If you're running Windows, you'll need to install a **bash shell** to run some of the commands. Install either the [Git Bash](https://git-scm.com/downloads) client or the [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-Make sure you (at least) the following software versions installed. This workshop has been tested with the following versions:
+Make sure 
+the following minimum software versions are installed. This workshop has been tested with the following versions:
 
    | Software             | Version | Command Line       |
    | -------------------- | ------- | ------------------ |
@@ -53,7 +54,8 @@ Clone the Github repository for the workshop to a local folder on your machine:
    ```
 
 ## Step 3. Create Azure Resources
-Next, you'll create the Azure resources will be using for the subsequent assignments.
+
+Next, you'll create the Azure resources for the subsequent assignments.
 
 You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager/bicep/overview) and [Azure CLI](https://docs.microsoft.com/cli/azure/what-is-azure-cli) to create the required resources:
 
@@ -63,7 +65,7 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
    az login
    ```
 
-1. Make sure you have selected the Azure subscription you want to work in. Replace the 'x's with your subscription GUID or subscription name:
+1. Make sure you have selected the Azure subscription in which you want to work. Replace the 'x's with your subscription GUID or subscription name. The subscription GUID can be found in the Azure Resource Group blade from the Azure Portal.
 
    ```shell
    az account set --subscription "xxxx-xxxx-xxxx-xxxx"
