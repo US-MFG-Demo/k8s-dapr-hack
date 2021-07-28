@@ -2,76 +2,86 @@
 
 ## Assignment goals
 
-In this assignment, you'll configure and make sure you have all the pre-requisites installed on your machine as well as have all the Azure resources created.
-Once you start creating the Azure resources you can move on to Assignment 1 while the resources get created, which can take from 5 to 25 minutes, depending on the region used.
+In this assignment, you'll install the pre-requisites tools and software as well as create the Azure resources required for the workshop. Once you launch the script to create the Azure resources, you can move on to Assignment 1 while the resources are provisioned.
+
+> [!NOTE]
+> Resource provisioning can take up to 25 minutes, depending on the region used.
 
 ## Step 1. Install pre-requisites
 
-1. Make sure you have access to an Azure Subscription as a contributor where you can deploy resources to.
-   - Access to an Azure subscription with Contributor access
-   - If you don't have one, [Sign Up for Azure HERE](https://azure.microsoft.com/en-us/free/)
-   - If you already have one, make sure you have at least Contributor access ([instructions](https://docs.microsoft.com/en-us/azure/role-based-access-control/check-access)) 
-     - Your IT organization may have given Contributor access to a resource group only, not the entire subscription. If that's the case, take note of that resource group name and make sure you have Contributor access to it, using the instructions linked
+1. To start, you'll need access to an Azure Subscription:
+
+   - If you don't have one, [Sign Up for an Azure account](https://azure.microsoft.com/en-us/free/).
+   - If you already have an Azure account, make sure you have at least `Contributor` access ([instructions](https://docs.microsoft.com/en-us/azure/role-based-access-control/check-access)) for a resource group in which you'll provision Azure resources.
+     
+> [!IMPORTANT]
+> Your IT organization may provide you access to an Azure resource group only, not the entire subscription. If that's the case, take note of that resource group name and make sure you have `Contributor` access to it, using the instructions linked
   
 1. Install all the pre-requisites listed below and make sure they're working fine
 
    - Git ([download](https://git-scm.com/))
    - .NET 5 SDK ([download](https://dotnet.microsoft.com/download/dotnet/5.0))
    - Visual Studio Code ([download](https://code.visualstudio.com/download)) with at least the following extensions installed:
-   - [C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)
-   - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
-   - Docker for desktop ([download](https://www.docker.com/products/docker-desktop))
-   - Dapr CLI and Dapr runtime ([instructions](https://docs.dapr.io/getting-started/install-dapr-selfhost/))
+     - [C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)
+     - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+     - Docker for desktop ([download](https://www.docker.com/products/docker-desktop))
+     - Dapr CLI and Dapr runtime ([instructions](https://docs.dapr.io/getting-started/install-dapr-selfhost/))
    - Install Azure CLI ([instructions]())
-   - Linux ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#linux))
-   - macOS ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos))
-   - Windows ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli))
+     - Linux ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#linux))
+     - macOS ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos))
+     - Windows ([instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli))
    - Install Azure CLI Bicep tools ([instructions](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-cli))
    - Install Bicep extension for VS Code ([instructions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep))
-   - If you are on Windows, you may need a bash shell to run some of the commands. Use the [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or the [Git Bash](https://git-scm.com/downloads).
+   
+  - If you're running Windows, you'll need to install a **bash shell** to run some of the commands. Install either the [Git Bash](https://git-scm.com/downloads) client or the [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-   Make sure you have at least the following versions installed. This workshop has been tested with the following versions:
+Make sure you (at least) the following software versions installed. This workshop has been tested with the following versions:
 
-   | Attribute            | Details |
-   | -------------------- | ------- |
-   | Dapr runtime version | v1.0.0  |
-   | Dapr.NET SDK version | v1.0.0  |
-   | Dapr CLI version     | v1.0.0  |
-   | Platform             | .NET 5  |
-   | azure-cli            | 2.24.0  |
+   | Software             | Version | Command Line       |
+   | -------------------- | ------- | ------------------ |
+   | Dapr runtime version | v1.2.2  | />dapr --version   |
+   | Dapr CLI version     | v1.2.0  | />dapr --version   |
+   | DotNet version       | 5.0.302 | />dotnet --version |
+   | azure-cli            | 2.24.0  | />az --version     |
 
-1. Clone the Github repository to a local folder on your machine:
+## Step 2. Clone the workshop repo
+
+Clone the Github repository for the workshop to a local folder on your machine:
 
    ```shell
    git clone https://github.com/usri/k8s-dapr-hack
    ```
 
-## Step 2. Create Azure Resources
-Now we need to create the Azure resources will be using for the subsequent assignments. 
+## Step 3. Create Azure Resources
+Next, you'll create the Azure resources will be using for the subsequent assignments.
 
-You will use Bicep and Azure CLI to create the resources needed:
+You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager/bicep/overview) and [Azure CLI](https://docs.microsoft.com/cli/azure/what-is-azure-cli) to create the required resources:
 
-1. If you are using [Azure Cloud Shell](https://shell.azure.com)) then you can skip this step. Open the [terminal window](https://code.visualstudio.com/docs/editor/integrated-terminal) in VS Code and make sure you're logged in to Azure
+1. If you're using [Azure Cloud Shell](https://shell.azure.com), skip this step and proceed to step 2. Open the [terminal window](https://code.visualstudio.com/docs/editor/integrated-terminal) in VS Code and make sure you're logged in to Azure
 
    ```shell
    az login
    ```
-1. Make sure you have selected the subscription you want to work in. Replace the Xs with your subscription GUID or subscription name:
+
+1. Make sure you have selected the Azure subscription you want to work in. Replace the 'x's with your subscription GUID or subscription name:
 
    ```shell
    az account set --subscription "xxxx-xxxx-xxxx-xxxx"
    ```
+
 1. Generate an SSH key pair if you don't already have one.
 
    ```shell
    ssh-keygen -t rsa -b 2048
    ```
-   Copy your public SSH key string so you can configure the parameter file in the next step to use it. It can be found in the "id_rsa.pub" file that was created or updated by the `ssh-keygen` command.
 
-1. The application were are deploying into our kuberentes cluster use PodIdentity which is currently in public preview so we will need run the following commands to enable this feature before we create the cluster.
+   > [!NOTE]
+   > ssh-keygen is a utility to generate public/private key files.  
+
+Copy the public SSH key string. You'll need it to configure the parameter file in the next step. It can be found in the "id_rsa.pub" file that was created or updated by the `ssh-keygen` command.
+
+1. In this workshop, you'll deploy the application into a Kubernetes cluster. You'll use [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) to access cloud resources securely with Azure Active Directory. At the time of this writing, this feature is in public preview. You'll need to run the following commands to enable this feature before you create the Kubernetes cluster.
    
-   **NOTE**  Public preview features should NOT be used in production environments.
-
    ```shell
    az feature register --name EnablePodIdentityPreview --namespace Microsoft.ContainerService
 
@@ -79,8 +89,10 @@ You will use Bicep and Azure CLI to create the resources needed:
 
    az extension update --name aks-preview   
    ```
+> [!NOTE]
+> Public preview features can be helpful for Hackathons and workshops, but never deployed in production environments.
 
-1. Modify the `src/Infrastructure/bicep/main.parameters.json` file so it contains the proper data for your deployment:
+1. In the accompanying source code, modify the `src/Infrastructure/bicep/main.parameters.json` file so it contains the proper data for the deployment:
 
    ```json
    {

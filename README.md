@@ -1,6 +1,6 @@
 # Dapr on Azure hands-on
 
-This repository contains several hands-on assignments that will introduce you to Dapr. You will start with a simple ASP.NET Core application that several microservices. In each assignment, you will change a part of the application so it works with Dapr (or "rub some Dapr on it" as Donovan Brown would say). You will be working with the following Dapr building blocks:
+This repository contains several hands-on assignments that will introduce you to Dapr. You will start with a simple ASP.NET Core application that is composed of several microservices. In each assignment, you'll enhance the the application by adding Dapr building blocks and components. At the same time, you'll configure the application to consume Azure-based [backing services](https://docs.microsoft.com/dotnet/architecture/cloud-native/definition#backing-services). When complete, you'll have implemented the following Dapr building blocks:
 
 - Service invocation
 - State-management
@@ -8,91 +8,101 @@ This repository contains several hands-on assignments that will introduce you to
 - Bindings
 - Secrets management
 
-As Dapr can run on a variety of hosts, for this lab, you will be use Dapr in *self-hosted mode*.
+As Dapr can run on a variety of hosts, you'll start by running Dapr in *self-hosted mode* on your computer. Then, you'll deploy the application to run Dapr in Azure Kubernetes Service.
 
 ## The domain
 
-The assignments implement a traffic-control camera system that are found on several Dutch highways. Here's how the simulation works:
+The assignments implement a traffic-control camera system that are found on Dutch highways. Here's how the simulation works:
 
 ![Speeding cameras](img/speed-trap-overview.png)
 
-There's 1 entry-camera and 1 exit-camera per lane. When a car passes an entry-camera, a photo of license plate is taken and the car and the timestamp is registered.
+There's 1 entry-camera and 1 exit-camera per lane. When a car passes an entry-camera, a photo of the license plate is taken and the car and the timestamp is registered.
 
-When the car passes an exit-camera, another photo and  timestamp are registered. The system then calculates the average speed of the car based on the entry- and exit-timestamp. If a speeding violation is detected, a message is sent to the Central Fine Collection Agency (or CJIB in Dutch). The system retrieves the vehicle information and the vehicle owner is sent a fine.
+When the car passes an exit-camera, another photo and timestamp are registered. The system then calculates the average speed of the car based on the entry- and exit-timestamp. If a speeding violation is detected, a message is sent to the Central Fine Collection Agency (or CJIB in Dutch). The system retrieves the vehicle information and the vehicle owner is sent a notice for a fine.
 
 ### Architecture
 
-The traffic-control application architecture consists of five microservices:
+The traffic-control application architecture consists of four microservices:
 
 ![Services](img/services.png)
 
-These services work together to simulate a traffic control scenario in code.
-
-The `src` folder in the repo contains the starting-point for the workshop. It contains a version of the services that use plain HTTP communication and store state in memory. With each assignment of the workshop, you will add a Dapr building block to the solution.
-
 - The **Camera Simulation** is a .NET Core console application that will simulate passing cars.
-- The **Traffic Control Service** is an ASP.NET Core WebAPI application that offers 2 endpoints: `/entrycam` and `/exitcam`.
+- The **Traffic Control Service** is an ASP.NET Core WebAPI application that offers entry and exit endpoints: `/entrycam` and `/exitcam`.
 - The **Fine Collection Service** is an ASP.NET Core WebAPI application that offers 1 endpoint: `/collectfine` for collecting fines.
-- The **Vehicle Registration Service** is an ASP.NET Core WebAPI application that offers 1 endpoint: `/getvehicleinfo/{license-number}` for getting the vehicle- and owner-information of a vehicle.
+- The **Vehicle Registration Service** is an ASP.NET Core WebAPI application that offers 1 endpoint: `/getvehicleinfo/{license-number}` for retrieving vehicle- and owner-information of a vehicle.
 
-The way the simulation works is depicted in the sequence diagram below:
+These services compose together to simulate a traffic control scenario.
+
+The following sequence diagram describes how the application works:
 
 <img src="img/sequence.png" alt="Sequence diagram" style="zoom:67%;" />
 
-1. The Camera Simulation generates a random license-number and sends a *VehicleRegistered* message (containing this license-number, a random entry-lane (1-3) and the timestamp) to the `/entrycam` endpoint of the TrafficControlService.
-1. The TrafficControlService stores the *VehicleState* (license-number and entry-timestamp).
-1. After some random interval, the Camera Simulation sends a *VehicleRegistered* message to the `/exitcam` endpoint of the TrafficControlService (containing the license-number generated in step 1, a random exit-lane (1-3) and the exit timestamp).
+1. The Camera Simulation generates a random license plate number and sends a *VehicleRegistered* message (containing this license plate number, a random entry-lane (1-3) and the timestamp) to the `/entrycam` endpoint of the TrafficControlService.
+1. The TrafficControlService stores the *VehicleState* (license plate number and entry-timestamp).
+1. After a random interval, the Camera Simulation sends a follow-up *VehicleRegistered* message to the `/exitcam` endpoint of the TrafficControlService. It contains the license plate number generated in step 1, a random exit-lane (1-3), and the exit timestamp.
 1. The TrafficControlService retrieves the *VehicleState* that was stored at vehicle entry.
 1. The TrafficControlService calculates the average speed of the vehicle using the entry- and exit-timestamp. It also stores the *VehicleState* with the exit timestamp for audit purposes, which is left out of the sequence diagram for clarity.
-1. If the average speed is above the speed-limit, the TrafficControlService calls the `/collectfine` endpoint of the FineCollectionService. The request payload will be a *SpeedingViolation* containing the license-number of the vehicle, the identifier of the road, the speeding-violation in KMh and the timestamp of the violation.
+1. If the average speed is above the speed-limit, the TrafficControlService calls the `/collectfine` endpoint of the FineCollectionService. The request payload will be a *SpeedingViolation* containing the license plate number of the vehicle, the identifier of the road, the speeding-violation in KMh, and the timestamp of the violation.
 1. The FineCollectionService calculates the fine for the speeding-violation.
-1. The FineCollectionSerivice calls the `/vehicleinfo/{license-number}` endpoint of the VehicleRegistrationService with the license-number of the speeding vehicle to retrieve its vehicle- and owner-information.
-1. The FineCollectionService sends a fine to the owner of the vehicle by email.
+1. The FineCollectionSerivice calls the `/vehicleinfo/{license-number}` endpoint of the VehicleRegistrationService with the license plate number of the speeding vehicle to retrieve its vehicle- and owner-information.
+1. The FineCollectionService sends a fine notice to the owner of the vehicle by email.
 
-All actions described in this sequence are logged to the console during execution so you can follow the flow.
+All actions described in the sequence are logged to the console during execution so you can follow the flow.
 
-It's important to understand that all calls between services are direct, synchronous HTTP calls using the HttpClient plumbing in .NET Core. While sometimes necessary, this type of synchronous communication is **NOT** considered a best practice for distributed microservice applications. When possible, you should consider decoupling microservices using asynchronous messaging. However, decoupling communication can dramatically increase the architectural and operational complexity of an application. You'll soon see how Dapr reduces the inherent complexity of distributed microservice applications.
+The `src` folder in the repo contains the starting-point for the workshop. It contains a version of the services that use plain HTTP communication and store state in memory. With each workshop assignment, you'll add a Dapr building block to enhance this application architecture.
+
+> [!IMPORTANT]
+> It's important to understand that all calls between services are direct, synchronous HTTP calls using the HttpClient library in .NET Core. While sometimes necessary, this type of synchronous communication [isn't considered a best practice](https://docs.microsoft.com/dotnet/architecture/cloud-native/service-to-service-communication#requestresponse-messaging) for distributed microservice applications. When possible, you should consider decoupling microservices using asynchronous messaging. However, decoupling communication can dramatically increase the architectural and operational complexity of an application. You'll soon see how Dapr reduces the inherent complexity of distributed microservice applications.
 
 ### End-state with Dapr applied
 
-Completing the lab assignments, you will evolve the application architecture to work with Dapr in Azure. The following diagram shows the end-state:
+As you complete the lab assignments, you'll evolve the application architecture to work with Dapr and consume Azure-based backing services:
+
+- Azure IoT Hub
+- Azure Redis Cache
+- Azure Service Bus
+- Azure Logic Apps
+- Azure Key Vault
+
+The following diagram shows the end-state of the application:
 
 <img src="img/dapr-setup.png" alt="Dapr setup" style="zoom:67%;" />
 
-1. For request/response type communication between the FineCollectionService and the VehicleRegistrationService, the **service invocation** building block is used.
-1. For sending speeding violations to the FineCollectionService, the **publish and subscribe** building block is used. Azure Service Bus is used as message broker.
-1. For storing the state of a vehicle, the **state management** building block is used. Azure Redis Cache is used as state store.
-1. Fines are sent to the owner of a speeding vehicle by email. For sending the email, an Azure Logic App using HTTP **output binding** is used.
-1. The Dapr **input binding** for MQTT is used to send simulated car info to the TrafficControlService. Azure IoT Hub is used as MQTT broker.
-1. The FineCollectionService needs credentials for connecting to the smtp server and a license key for a fine calculator component. It uses the **secrets management** building block with Azure Key Vault to get the credentials and the license key.
+1. For synchronous request/response communication between the FineCollectionService and VehicleRegistrationService to retrieve driver information, you'll implement the Dapr **service invocation** building block.
+1. To send speeding violations to the FineCollectionService, you'll implement the Dapr **publish and subscribe** building block (asynchronous communication) with the Dapr Azure Service Bus component.
+1. To store vehicle state, you'll implement the Dapr **state management** building block with the Dapr Azure Redis Cache component.
+1. To send fine notices to the owner of a speeding vehicle by email. You'll implement the HTTP **output binding** building block with the Dapr Azure Logic App component.
+1. To send car info to the TrafficControlService, you'll use the Dapr **input binding** for MQTT using Dapr Azure IoT Hub component as the MQTT broker.
+1. To retrieve a license key for a fine calculator component and credentials for connecting to the smtp server, you'll implement the Dapr **secrets management** building block with Dapr Azure Key Vault component.
 
-The sequence diagram below shows how the solution will work with Dapr:
+The following sequence diagram shows how the solution will work after implementing Dapr:
 
 <img src="img/sequence-dapr.png" alt="Sequence diagram with Dapr" style="zoom:67%;" />
 
-> If during the workshop you are lost on what the end result of an assignment should be, come back to this README to see the end result.
+> [!NOTE]
+> It's helpful to refer back to preceding sequence diagram as you progress through the workshop assignments.
 
 ## Getting started with the workshop
 
 ### Instructions
 
-Every assignment is contained in a separate folder in this repo. Each folder contains the description of the assignment that you can follow.
+You'll find each assignment along with a description in separate folders in this repo. The `src` folder contains the code for the workshop.
 
-**It is important you work through all the assignments in order and don't skip any assignments. The instructions for each subsequent assignment rely on the fact that you have finished the previous assignments successfully.**
+> [!IMPORTANT]
+> It is important you work through all the assignments in order and don't skip any assignments. The instructions and code for each subsequent assignment builds on top of the completed previous assignments.
 
-The `src` folder in the repo contains the starting-point for the workshop. It contains a version of the services that use plain HTTP communication and stores state in memory. With each assignment of the workshop, you will add a Dapr building block to this solution.
-
-The description for each assignment (accept the first one) contains *two approaches* for completing the tasks: A **DIY** option or a **step-by-step** option. The DIY option states the outcome you need to achieve and provides no further instruction. It's entirely up to you to achieve the goals with the help of the Dapr documentation. The step-by-step option describes exactly what you need to change in the application step-by-step. It's up to you to pick an approach. If you pick the DIY approach and get stuck, you can always go to the step-by-step approach for some help.
+The description for each assignment (accept the first one) contains *two approaches* for completing the tasks: A **DIY** or a **step-by-step** option. The DIY option states the outcome you need to achieve and provides no further instruction. It's entirely up to you to achieve the goals with the help of the Dapr documentation. The step-by-step option describes exactly what you need to change in the application step-by-step. It's up to you to pick an approach. If you pick the DIY approach and get stuck, you can always go to the step-by-step approach for some help.
 
 #### Integrated terminal
 
-During the workshop, you should be working in 1 instance of VS Code. You will use the integrated terminal in VS Code extensively. All terminal commands have been tested on a Windows machine with the integrated Powershell terminal in VS Code. If you have any issues with the commands on Linux or Mac, please create an issue or a PR to add the appropriate command.
+It's recommended that you use a single instance of VS Code for the development work for the workshop. You'll use the integrated terminal in VS Code extensively. All terminal commands have been tested on a Windows machine with the integrated Bash terminal in VS Code. If you have any issues with the commands on Linux or Mac, please create an issue or a PR to add the appropriate command.
 
- > Optionally, you may want to install and open the free [Typora](https://typora.io/) markdown application to read the lab instructions and use VS Code for your development work.
+> [!NOTE]
+> Optionally, you may want to install the free [Typora](https://typora.io/) markdown application to read the lab instructions while using VS Code for your development work.
 
 #### Prevent port collisions
 
-During the workshop you will run the services in the solution on your local machine. To prevent port-collisions, all services listen on a different HTTP port. When running the services with Dapr, you need additional ports for HTTP and gRPC communication with the sidecars. By default, these ports are `3500` and `50001`. But, to prevent port collisions, you'll use different port numbers in the assignments. Please closely follow the instructions so that your microservices use the following ports for their Dapr sidecars:
+During the workshop, you'll run the microservices in the solution on your local machine. To prevent port-collisions, all services will listen on a different HTTP port. When running with Dapr, you need additional ports for HTTP and gRPC communication between the sidecar services. By default, these ports are `3500` and `50001`. However, you'll use different port numbers for each service to prevent port collisions. Please closely follow the instructions so that your microservices use the following ports for their Dapr sidecars:
 
 | Service                    | Application Port | Dapr sidecar HTTP port | Dapr sidecar gRPC port |
 | -------------------------- | ---------------- | ---------------------- | ---------------------- |
@@ -100,9 +110,9 @@ During the workshop you will run the services in the solution on your local mach
 | FineCollectionService      | 6001             | 3601                   | 60001                  |
 | VehicleRegistrationService | 6002             | 3602                   | 60002                  |
 
-Use the ports specified in the above table *whether* using the DIY or step-by-step approach. 
+Use the ports specified in the preceding table *whether* using the DIY or step-by-step approach.
 
-You will specify the ports on the command-line when starting a service with the Dapr CLI. The following command-line flags will be used:
+You'll specify the ports from the command-line when starting a service with the Dapr CLI using the following command-line arguments:
 
 - `--app-port`
 - `--dapr-http-port`
@@ -110,14 +120,14 @@ You will specify the ports on the command-line when starting a service with the 
 
 #### Kudos to the originators
 
-Before we start, please give a big hand to original authors of this workshop:
+Before we start, please give a big round of applause to original authors of this workshop:
 
 <img src="img/edwin.png" style="zoom:67%;" />
 
 <img src="img/sander.png" style="zoom:67%;" />
 
-Both Edwin and Sander are Principal Architects at InfoSupport in the Netherlands. Both are Microsoft MVPs, avid community presenters, and co-authors of the Microsoft eBook [Dapr for .NET Developers](https://docs.microsoft.com/dotnet/architecture/dapr-for-net-developers/). 
+Both Edwin and Sander are Principal Architects at InfoSupport in the Netherlands. Both are Microsoft MVPs, avid community presenters, and co-authors of the Microsoft eBook [Dapr for .NET Developers](https://docs.microsoft.com/dotnet/architecture/dapr-for-net-developers/).
 
-### Ready? 
+### Ready?
 
 Go to [assignment 0](Assignment0/README.md).
