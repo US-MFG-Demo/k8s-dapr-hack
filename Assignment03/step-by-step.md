@@ -10,13 +10,13 @@ To complete this assignment, you must achieve the following goals:
 
 1. RabbitMQ will be used as pub/sub message broker that runs as part of the solution in a Docker container.
 
-1. Optionally, the pub/sub message broker will switch to Azure Service Bus with no code changes. 
+1. You'll update the solution so that the pub/sub message broker will switch to Azure Service Bus with no code changes. 
 
-> Don't worry if you have no experience with RabbitMQ. You will run it as a container in the background and don't need to interact with it directly in any way. The instructions will explain exactly how to do that.
+> Don't worry if you have no experience with RabbitMQ or Azure Service Bus. The instructions will explain exactly how to plug them in.
 
 This assignment targets number **2** in the end-state setup:
 
-<img src="img/pub-sub-operation.png" style="zoom: 67%;" />
+<img src="img/dapr-setup-assignment03.png" style="zoom: 67%;" />
 
 ## Step 1: Run RabbitMQ as message broker
 
@@ -61,6 +61,8 @@ Warning: Once you remove container, it's gone. To use it, again, you'll need to 
 > For your convenience, the `src/Infrastructure` folder contains Powershell scripts for starting the infrastructural components you'll use throughout the workshop. invoke the `src/Infrastructure/rabbitmq/start-rabbitmq.ps1` script to start the RabbitMQ container.
 >
 > If you want to start all the infrastructural containers at once (for this and the assignments to come), invoke the `src/Infrastructure/start-all.ps1` script.
+>
+> If you're using Bash, just copy/paste the docker command to the shell and run it.
 
 ## Step 2: Configure the pub/sub component
 
@@ -189,7 +191,7 @@ Now the FineCollectionService is ready to receive published messages through Dap
 
    > The JsonDocument parameter enables you to extract the raw JSON from the request body.
 
-1. Add the following code inside the `CollectFine` method to extract the `SpeedingViolation` data from the cloud event:
+1. Add the following code at the beginning of the `CollectFine` method to extract the `SpeedingViolation` data from the cloud event:
 
    ```csharp
    var data = cloudevent.RootElement.GetProperty("data");
@@ -222,7 +224,7 @@ You're going to start the application, service-by-service. While doing so, you'l
 
 1. First, you'll start the VehicleRegistrationService shown below:
  
-   <img src="../img/start-vehicleregistration.png" style="padding-top: 25px;" />
+   <img src="img/dapr-setup-assignment03-vehichleregistration-highlight.png" style="padding-top: 25px;" />
 
 1. Open a **new** terminal window in VS Code and make sure the current folder is `src/VehicleRegistrationService`.
 
@@ -237,9 +239,9 @@ You're going to start the application, service-by-service. While doing so, you'l
 1. Look for the following output:
    > *You're up and running! Both Dapr and your app logs will appear here.*
 
-1. Next, you'll start the FineCollecitonService: 
+1. Next, you'll start the FineCollectionService: 
 
-   <img src="../img/start-finecollection.png" style="padding-top: 25px;" />
+   <img src="img/dapr-setup-assignment03-finecollection-highlight.png" style="padding-top: 25px;" />
 
 1. Open a **second** new terminal window in VS Code and change the current folder to `src/FineCollectionService`.
 
@@ -254,7 +256,7 @@ You're going to start the application, service-by-service. While doing so, you'l
 
 1. Next, you'll start the TrafficControlService:
 
-   <img src="../img/start-trafficcontrol.png" style="padding-top: 25px;" />
+   <img src="img/dapr-setup-assignment03-trafficcontrol-highlight.png" style="padding-top: 25px;" />
 
 1. Open a **third** new terminal window in VS Code and change the current folder to `src/TrafficControlService`.
 
@@ -269,7 +271,7 @@ You're going to start the application, service-by-service. While doing so, you'l
 
 1. Finally, you'll start the Traffic Simulator:
 
-   <img src="../img/start-simulator.png" style="padding-top: 25px;" />
+   <img src="img/dapr-setup-assignment03-simulation-highlight.png" style="padding-top: 25px;" />
 
 1. Open a **fourth** new terminal window in VS Code and change the current folder to `src/Simulation`.
 
@@ -287,7 +289,7 @@ time="2021-02-27T16:46:02.5989612+01:00" level=info msg="app is subscribed to th
 
 This log entry shows that Dapr queried the topic specified by the service `collectfine` and created a corresponding subscription.
 
-RabbitMQ provides a built-in dashboard that presents messaging activity, logging, and performance metrics. Open a browser and navigate to `http://localhost:15672/`. Both the login name is `guest` and the password is `guest`. Shown below, the dashboard is helpful for troubleshooting RabbitMQ anomalies:
+RabbitMQ provides a built-in dashboard that presents messaging activity, logging, and performance metrics. Open a browser and navigate to [http://localhost:15672/](http://localhost:15672/). Both the login name is `guest` and the password is `guest`. Shown below, the dashboard is helpful for troubleshooting RabbitMQ anomalies:
 
    <img src="img/rabbitmq-dashboard.png" style="padding-top: 25px;" />
 
@@ -488,7 +490,7 @@ Test the application again by executing the activities in step 5 again.
 
 ## Step 8: Dapr publish/subscribe with Azure Service Bus
 
- > This step assumes you have created an Azure Service Bus namespace. If not, use [this link](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-quickstart-topics-subscriptions-portal) to do so now.
+ > This step assumes you have created an Azure Service Bus namespace in [Assignment 0](../Assignment0/Readme.md). 
 
 So far, in this assignment, you've used *RabbitMQ* to publish and subscribe to messages. Interestingly, you didn't require an extensive understanding of this message broker. Using RabbitMQ required two steps:
 
@@ -517,7 +519,7 @@ The answer? Change the YAML configuration file. There are absolutely no code cha
      type: pubsub.azure.servicebus
      version: v1
      metadata:
-     - name: connectionstring
+     - name: connectionString
        value: "<your Azure Service Bus connection string"
    scopes:
      - trafficcontrolservice
@@ -530,6 +532,11 @@ The answer? Change the YAML configuration file. There are absolutely no code cha
 
     > Warnings: (1) Never use the RootManageSharedAccessKey in real-world application. (2) Never expose the connection string in plain text. In a real world application you'd create a custom shared access key and access it from a secure secret store. You'll do that in a later assignment.
 
+   You can also use AZ CLI tool to get the connection string:
+
+   ```
+   az servicebus namespace authorization-rule keys list --namespace-name <service bus namespace> -g <resource group> --name RootManageSharedAccessKey --query "primaryConnectionString" -o tsv
+   ```
 1. Stop and restart the TrafficControlService and FineCollectionService (the second and third services from step 5).
 
 1. Navigate to the Service Bus blade in the Azure Portal. After a few minutes, you'll see the message traffic between services in the dashboard.
@@ -540,33 +547,6 @@ https://docs.dapr.io/reference/components-reference/supported-pubsub/setup-azure
 
 As you complete this assignment, hopefully you see  The *value proposition* of Dapr. By providing infrastructure plumbing, it dramatically simplifies your application. Equally important, you can plug in any pre-defined component without having to 
 change your application code.
-
-## Step 9: Deploy to Azure Kubernetes Service
-
-Use Azure Container Registry Tasks to have the Azure Container Registry build & store your container image.
-
-1. Navigate to the src/TrafficControlService directory & use the Azure Container Registry task to build your image from source. **Note the change in image tag**
-
-   ```shell
-   az acr build --registry crdaprusscdemo --image trafficcontrolservice:assignment03 .
-   ```
-
-2. Update the src/TrafficControlService/deploy/deploy.yaml file with the new image tab.
-
-   ```yaml
-   spec:
-      containers:
-      - name: trafficcontrolservice
-        image: crdaprusscdemo.azurecr.io/trafficcontrolservice:assignment03
-   ```
-
-3. Deploy the TrafficControlService image to the Azure Kubernetes Service.
-
-   ```shell
-   kubectl apply -f ./deploy/deploy.yaml
-   ```
-
-3. Repeat theses steps for the FineCollectionService.
 
 ## Next assignment
 
