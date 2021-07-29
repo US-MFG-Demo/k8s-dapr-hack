@@ -241,7 +241,7 @@ You're going to start the application, service-by-service. While doing so, you'l
 
 1. Next, you'll start the FineCollectionService: 
 
-   <img src="img/dapr-setup-assignment03-vehichleregistration-highlight.png" style="padding-top: 25px;" />
+   <img src="img/dapr-setup-assignment03-finecollection-highlight.png" style="padding-top: 25px;" />
 
 1. Open a **second** new terminal window in VS Code and change the current folder to `src/FineCollectionService`.
 
