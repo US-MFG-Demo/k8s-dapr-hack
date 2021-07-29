@@ -24,10 +24,11 @@ To complete this assignment, you must reach the following goals:
 
 - The TrafficControl service saves the state of a vehicle (`VehicleState` class) using the state management building block after vehicle entry.
 - The TrafficControl service reads and updates the state of a vehicle using the state management building block after vehicle exit.
+- The final solution uses Azure Cache for Redis as state store
 
 This assignment targets the operation labeled as **number 3** in the end-state setup:
 
-<img src="../img/dapr-setup.png" style="zoom: 67%;;padding-top: 25px;" />
+<img src="img/dapr-setup-assignment4.png" style="zoom: 67%;;padding-top: 25px;" />
 
 ## DIY instructions
 
