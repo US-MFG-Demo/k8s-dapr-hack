@@ -382,7 +382,7 @@ Now, you can also use Azure Cache for Redis instead of the default state store. 
     az redis show --name <redis cache name> -g <resource group> --query "[hostName,sslPort]"
     ```
 
-    Redis passoword:
+    Redis password:
 
     ```
     az redis list-keys --name redis-dapr-mce123 -g rg-dapr-mce123 --query "primaryKey" -o tsv
