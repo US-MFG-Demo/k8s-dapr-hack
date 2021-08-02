@@ -19,11 +19,11 @@ To complete this assignment, you must reach the following goals:
 
 This assignment targets the operation labeled as **number 4** in the end-state setup:
 
-<img src="../img/dapr-setup.png" style="zoom: 67%;" />
+<img src="./img/output-binding-operation.png" style="zoom: 67%;" />
 
 ## DIY instructions
 
-First open the `src` folder in this repo in VS Code. Then open the [Bindings documentation](https://docs.dapr.io/developing-applications/building-blocks/bindings/) and start hacking away. You can use [MailDev](https://github.com/maildev/maildev) for the development SMTP server.
+First open the `src` folder in this repo in VS Code. Then open the [Bindings documentation](https://docs.dapr.io/developing-applications/building-blocks/bindings/) and start hacking away. You can use [MailDev](https://github.com/maildev/maildev) for the development SMTP server. Then, you will bind to an Azure Logic App to send out emails.
 
 ## Step by step instructions
 
@@ -33,6 +33,6 @@ To get step-by-step instructions to achieve the goals, open the [step-by-step in
 
 Congratulations, you have now completed assignment 5!
 
-Make sure you stop all running processes and close all the terminal windows in VS Code before proceeding to the next assignment.
+Make sure you stop all running processes before proceeding to the next assignment.
 
 Go to [assignment 6](../Assignment06/README.md).
