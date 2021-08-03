@@ -35,8 +35,7 @@ In this assignment, you'll install the pre-requisites tools and software as well
    
   - If you're running Windows, you'll need to install a **bash shell** to run some of the commands. Install either the [Git Bash](https://git-scm.com/downloads) client or the [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-Make sure 
-the following minimum software versions are installed. This workshop has been tested with the following versions:
+Make sure the following minimum software versions are installed. This workshop has been tested with the following versions:
 
    | Software             | Version | Command Line       |
    | -------------------- | ------- | ------------------ |
@@ -59,7 +58,7 @@ Next, you'll create the Azure resources for the subsequent assignments.
 
 You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager/bicep/overview) and [Azure CLI](https://docs.microsoft.com/cli/azure/what-is-azure-cli) to create the required resources:
 
-1.  If you're using [Azure Cloud Shell](https://shell.azure.com), skip this step and proceed to step 2. Open the [terminal window](https://code.visualstudio.com/docs/editor/integrated-terminal) in VS Code and make sure you're logged in to Azure
+1. If you're using [Azure Cloud Shell](https://shell.azure.com), skip this step and proceed to step 2. Open the [terminal window](https://code.visualstudio.com/docs/editor/integrated-terminal) in VS Code and make sure you're logged in to Azure
 
     ```shell
     az login
@@ -71,19 +70,21 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     az account set --subscription "xxxx-xxxx-xxxx-xxxx"
     ```
 
-1.  Generate an SSH key pair if you don't already have one.
+1. Generate an SSH key pair if you don't already have one.
 
     ```shell
     ssh-keygen -t rsa -b 2048
     ```
 
-    > [!NOTE]
-    > ssh-keygen is a utility to generate public/private key files.  
+   - If prompted for a file name, leave the entry blank, and press enter.
+   - If prompted for a passphrase, leave the entry blank, and press enter.
 
-    Copy the public SSH key string. You'll need it to configure the parameter file in the next step. It can be found in the "id_rsa.pub" file that was created or updated by the `ssh-keygen` command.
-
-1. In this workshop, you'll deploy the application into a Kubernetes cluster. You'll use [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) to access cloud resources securely with Azure Active Directory. At the time of this writing, this feature is in public preview. You'll need to run the following commands to enable this feature before you create the Kubernetes cluster.
+   Once complete, you will find the two ssh key files in the following directory: `C:\Windows\System32\config\systemprofile\.ssh`
    
+   Right-click on the `id_rsa` file and open with Notepad. Copy the entire contents of the file which is the public key. You'll need it to configure the parameter file in an upcoming step.
+    
+1. Later in this workshop, you'll deploy the completed application into a Azure Kubernetes cluster. You'll use [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) to access cloud resources securely with Azure Active Directory. You'll need to run the following commands to enable this feature before you create the Kubernetes cluster.
+
     ```shell
     az feature register --name EnablePodIdentityPreview --namespace Microsoft.ContainerService
 
@@ -91,8 +92,9 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
 
     az extension update --name aks-preview   
     ```
+
     > [!NOTE]
-    > Public preview features can be helpful for Hackathons and workshops, but never deployed in production environments.
+    > At the time of this writing, this feature is in public preview. Public preview features are a great way to learn upcoming features, but should *never deployed* in a production environment.
 
 1.  In the accompanying source code, modify the `src/Infrastructure/bicep/main.parameters.json` file so it contains the proper data for the deployment:
 
@@ -111,19 +113,19 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
          "value": "adminbruce"
       },
       "publicSSHKey": {
-         "value": "ssh-rsa AAAAB...wnBTn bruce.wayne@wayneenterprises.com"        
+         "value": "ssh-rsa AAAAB...wnBTn bruce.wayne@<your computer name>"        
       }
     }
     ```
 
-1.  Create a new resource group to deploy your Azure infrastructure into, by deploying the `src/Infrastructure/bicep/rg.bicep` file and store the name of the created resource group name in a variable. Make sure to replace the location parameter below with the proper Azure region that you want to use:
+1.  Create a new resource group for your lab project using the `src/Infrastructure/bicep/rg.bicep` script file. In the command, make sure to replace the location parameter with the Azure region you want to use:
 
     ```shell
-    cd .\src\Infrastructure\bicep\
+    cd ./src/Infrastructure/bicep/
     az deployment sub create --location "southcentralus" --template-file rg.bicep --parameters ./main.parameters.json --query "properties.outputs" --output yamlc
     ```
 
-1.  The previous command should have ended with success, by displaying the name of the resource group that was created. Something similar to this:  
+1.  Upon completion, the command will display the name of the newly-created resource group:
 
     ```yaml
     resourceGroupName:
@@ -131,16 +133,18 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     value: rg-dapr-youruniqueid123
     ```
 
-1.  Take note of the resource group name. You're now ready to create all the Azure resources under that resource group. To do that, run the following Azure CLI command:
+    Copy the resource group as you'll use in the next command.
+
+1.  You'll now create the required Azure resources inside the new resource group with the following Azure CLI command.
 
     ```shell
     az deployment group create --resource-group "rg-dapr-youruniqueid123" --template-file main.bicep --parameters ./main.parameters.json --query "properties.outputs" --output yaml
     ```
 
-    **NOTE**: This is a long-running command and may take several minutes. You're encouraged to jump to the next lab while the command is creating all the Azure resources.
+    > [!NOTE]
+    > Creating the resources can take some time. You're encouraged to jump to the **Assignment 01** while the command executes.
 
-    In the outputs for this command, you will find the name of the various Azure resources that have been created.
-    You will need these to configure your Dapr services.
+    Upon completion, the command will output information about the newly-created Azure resources:
 
     ```yaml
     aksFQDN:
@@ -202,13 +206,18 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
       value: sadaprmce123
     ```
 
+    Copy these values. You'll need them to configure your Dapr services.
+
 1.  Run the following command to get the AKS credentials for your cluster.
 
     ```shell
     az aks get-credentials --name "<aksname>" --resource-group "<resource-group-name>"
     ```
+   
+    > [!NOTE]
+    > The `az aks get-credentials` command retrieves access credentials for an AKS cluster. It merges the credentials into your local kubeconfig file.
 
-    Verify your "target" cluster is set correctly.
+1.  Verify your "target" cluster is set correctly.
 
     ```shell
     kubectl config get-contexts
@@ -217,10 +226,9 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     Your results should look something like this.
 
     ```shell
-    CURRENT   NAME                 CLUSTER              AUTHINFO                                                    NAMESPACE
-    *         aks-dapr-mce123      aks-dapr-mce123      clusterUser_rg-dapr-mce123_aks-dapr-mce123
+    CURRENT  NAME                   CLUSTER                AUTHINFO                                               NAMESPACE
+    *        aks-dapr-<your value>  aks-dapr-<your value>  clusterUser_rg-dapr-<your value>_aks-dapr-<your value> blah-blah-blah
     ```
-
    
 1.  Install Dapr in your cluster
 
