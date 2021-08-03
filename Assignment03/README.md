@@ -29,7 +29,13 @@ To complete this assignment, you must reach the following goals:
 
 This assignment targets the operations labeled as **number 2** in the end-state setup:
 
-<img src="img/dapr-setup-assignment03.png" style="zoom: 67%;" />
+**Local**
+
+<img src="img/pub-sub-operation.png" style="zoom: 67%;" />
+
+**Azure**
+
+<img src="img/pub-sub-operation-azure.png" style="zoom: 67%;" />
 
 ## DIY instructions
 

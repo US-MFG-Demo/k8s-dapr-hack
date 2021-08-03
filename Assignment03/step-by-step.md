@@ -16,7 +16,7 @@ To complete this assignment, you must achieve the following goals:
 
 This assignment targets number **2** in the end-state setup:
 
-<img src="img/dapr-setup-assignment03.png" style="zoom: 67%;" />
+<img src="img/pub-sub-operation.png" style="zoom: 67%;" />
 
 ## Step 1: Run RabbitMQ as message broker
 
@@ -502,6 +502,8 @@ In a traditional microservice application, a large amount of development effort 
 Hopefully, you can easily see how Dapr building blocks and components abstracts the complexity of building complex distributed applications.
 
 With Dapr, how much work would be involved to switch message brokers, say, from RabbitMQ to Azure Service Bus?
+
+![pub-sub-operation-azure](./img/pub-sub-operation-azure.png)
 
 The answer? Change the YAML configuration file. There are absolutely no code changes required. Let's do this right now.
 

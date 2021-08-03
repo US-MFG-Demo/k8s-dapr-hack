@@ -23,6 +23,8 @@ Note the blue-colored Dapr secrets building block that sits between the applicat
 
 > For this assignment you'll use a file-based local secret store component. Local stores are meant for development or testing purposes. Never use them in production!
 
+> Alternatively, you can implement Azure KeyVault as your secret store in this assignment.
+
 Another way of using secrets, is to reference them from Dapr configuration files. You will use both approaches in this assignment.
 
 To learn more about the secrets building block, read the [introduction to this building block](https://docs.dapr.io/developing-applications/building-blocks/secrets/) in the Dapr documentation. Also, checkout the [secrets chapter](https://docs.microsoft.com/dotnet/architecture/dapr-for-net-developers/secrets) in the [Dapr for .NET Developers](https://docs.microsoft.com/dotnet/architecture/dapr-for-net-developers/) guidance eBook.
@@ -36,7 +38,13 @@ To complete this assignment, you must reach the following goals:
 
 This assignment targets the operation labeled as **number 6** in the end-state setup:
 
-<img src="../img/dapr-setup.png" style="zoom: 67%;" />
+**Local**
+
+<img src="./img/secrets-management-operation.png" style="zoom: 67%;" />
+
+**Azure**
+
+<img src="./img/secrets-management-operation-azure.png" style="zoom: 67%;" />
 
 ## DIY instructions
 
@@ -46,8 +54,10 @@ First open the `src` folder in this repo in VS Code. Then open the [Secrets mana
 
 To get step-by-step instructions to achieve the goals, open the [step-by-step instructions](step-by-step.md).
 
-## Final solution
+## Next assignment
 
-Congratulations, you have reached the end of the hands-on assignments! If you haven't been able to do all the assignments, go to [this repository](https://github.com/robvet/dapr-workshop-complete) for the end result.
+Congratulations! You have now completed assignment 7.
 
-Thanks for participating in these hands-on assignments! Hopefully you've learned about Dapr and how to use it. Obviously, these assignments barely scratch the surface of what is possible with Dapr. We have not touched upon subjects like: hardening production environments, actors, integration with Azure Functions, Azure API Management and Azure Logic Apps just to name a few. So if you're interested in learning more, I suggest you read the [Dapr documentation](https://docs.dapr.io).
+Make sure you stop all running processes before proceeding to the next assignment.
+
+Go to [assignment 8](../Assignment08/README.md).

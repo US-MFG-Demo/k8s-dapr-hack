@@ -19,7 +19,13 @@ To complete this assignment, you must reach the following goals:
 
 This assignment targets the operation labeled as **number 4** in the end-state setup:
 
+**Local**
+
 <img src="./img/output-binding-operation.png" style="zoom: 67%;" />
+
+**Azure**
+
+<img src="./img/output-binding-operation-azure.png" style="zoom: 67%;" />
 
 ## DIY instructions
 

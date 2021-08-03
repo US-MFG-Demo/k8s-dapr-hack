@@ -10,6 +10,7 @@ To complete this assignment, you must reach the following goals:
 
 - Successfully deploy all 3 services (VehicleRegistrationService, TrafficControlService & FineCollectionService) to an AKS cluster.
 - Successfully run the Simulation service locally that connects to your AKS-hosted services
+- Successfully expose Zipkin for monitoring logs
 
 ## Step 1: Update all port numbers
 
@@ -163,7 +164,32 @@ to reference your container registry path & AKS ingress.
     vehicleregistrationservice-65c9cf6cdc-s7c4s   2/2     Running            0          4d19h
     ```
 
-## Step 5: Deploy Dapr sidecars to Azure Kubernetes Service
+## Step 5: Expose Zipkin log monitoring
+
+Create a file in the `src/dapr/components` directory called `zipkin.yaml` and add the following YAML. Customize the `host` key.
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zipkin
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: zipkin.e13e6fb6d2534a41ae60.southcentralus.aksapp.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service: 
+            name: zipkin
+            port: 
+              number: 9411
+```
+
+## Step 6: Deploy Dapr sidecars to Azure Kubernetes Service
 
 Run the following command to deploy all of your Dapr sidecars to AKS.
 
@@ -172,7 +198,7 @@ cd src/dapr/components
 kubectl apply -f .
 ```
 
-## Step 6: Run Simulation application
+## Step 7: Run Simulation application
 
 Run the Simluation service, which writes to your IoT Hub's MQTT queue. You will begin to see fines get emailed to you as
 appropriate.

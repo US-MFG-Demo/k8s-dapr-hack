@@ -4,7 +4,11 @@
 
 In this assignment, you will use the open-source [MailDev](https://github.com/maildev/maildev) component, running inside in a container, as your SMTP server. This is a development SMTP server that doesn't actually send out emails (by default), but collects them and shows them in a built-in inbox. The tool extremely handy for test or demo scenarios. You will run this server as a Docker container.
 
+<<<<<<< HEAD
+![output-binding-operation](./img/output-binding-operation.png)
+=======
 Then you will repoint the output bindings to an Azure Logic App that will send out the emails.
+>>>>>>> main
 
 ## Step 1: Run the SMTP server
 
@@ -206,35 +210,47 @@ You're going to start all the services now. Like before, you'll specify the cust
 
 You should see the same logs as before. You can also view the fine notification emails sent by the FineCollectionService:
 
-1.  Open a browser and browse to [http://localhost:4000](http://localhost:4000).
-1.  Wait for the first emails to come in.
-1.  Click on an email in the inbox to see its content:
-    <img src="img/inbox.png" style="zoom:67%;padding-top: 25px;" />
+1. Open a browser and browse to [http://localhost:4000](http://localhost:4000).
+1. Wait for the first emails to come in.
+1. Click on an email in the inbox to see its content:
+   <img src="img/inbox.png" style="zoom:67%;padding-top: 25px;" />
 
-## Step 5: Use an Azure Logic App as the output binding for sending email
+## Step 5: Use an Azure Logic App to send email
 
-1.  Open the Logic App that is deployed to your Azure Resource Group. You will need to initialize the Office 365 connector and copy the HTTP trigger endpoint.
-    1. Click on the **Logic app designer** blade
-    1. Click on the **Send an email (V2)** step and click **Create**. You will have to sign-in with your Office 365-enabled ID.
-    1. Click on the **When a HTTP request is received** step and copy the **HTTP POST URL**. This is the endpoint the Dapr output binding will call to send an email.
+![output-binding-operation-azure](./img/output-binding-operation-azure.png)
 
-1.  Update the `src/dapr/components/email.yaml` file to use the Azure Logic App to send email. You will change the bindings from SMTP to HTTP and fill in the HTTP endpoint for the Logic App in Azure.
+1. Open the Logic App that is deployed to your Azure Resource Group. You will need to initialize the Office 365 connector and copy the HTTP trigger endpoint.
+   1. Click on the **Logic app designer** blade
+   2. Click on the **Send an email (V2)** step and click **Create**. You will have to sign-in with your Office 365-enabled ID.
+   3. Click on the **When a HTTP request is received** step and copy the **HTTP POST URL**. This is the endpoint the Dapr output binding will call to send an email.
 
-    **Example:**
-    ```yaml
-    apiVersion: dapr.io/v1alpha1
-    kind: Component
-    metadata:
-      name: sendmail
-    spec:
-    type: bindings.http
-    version: v1
-    metadata:
-    - name: url
-      value: https://prod-18.southcentralus.logic.azure.com:443/workflows/e76d81048c3941f18638ab0055bba68a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8z3TLKcgFakekeyf9HY_3pkViSk6fFR2m-db-BWobZFw
-    scopes:
-    - finecollectionservice
-    ```
+1. Update the src/dapr/components/email.yaml file to use the Azure Logic App to send email. You will change the bindings from SMTP to HTTP and fill in the HTTP endpoint
+   for the Logic App in Azure.
+
+   **Example:**
+   ```yaml
+   apiVersion: dapr.io/v1alpha1
+   kind: Component
+   metadata:
+   name: sendmail
+   spec:
+   type: bindings.http
+   version: v1
+   metadata:
+      - name: url
+        value: https://prod-18.southcentralus.logic.azure.com:443/workflows/e76d81048c3941f18638ab0055bba68a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8z3TLKcgFakekeyf9HY_3pkViSk6fFR2m-db-BWobZFw
+   scopes:
+   - finecollectionservice
+   ```
+
+1. Navigate to the src/FineCollectionService directory. Open the src\FineCollectionService\Controllers\CollectionController.cs file. Modify the **CollectFine** method to
+   pass in a JSON object to the Logic App's HTTP endpoint. 
+
+   Add the following to the using statements at the top of the file.
+
+   ```csharp
+   using Newtonsoft.Json.Linq;
+   ```
 
 1.  Navigate to the `src/FineCollectionService` directory. Open the `src\FineCollectionService\Controllers\CollectionController.cs` file. Modify the **CollectFine** method to pass in a JSON object to the Logic App's HTTP endpoint. 
 

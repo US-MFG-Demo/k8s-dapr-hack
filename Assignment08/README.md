@@ -10,6 +10,7 @@ To complete this assignment, you must reach the following goals:
 
 - Successfully deploy all 3 services (VehicleRegistrationService, TrafficControlService & FineCollectionService) to an AKS cluster.
 - Successfully run the Simulation service locally that connects to your AKS-hosted services
+- Successfully expose Zipkin for monitoring container logs
 
 ## DIY instructions
 
@@ -23,3 +24,9 @@ To complete this assignment, you must reach the following goals:
 ## Step by step instructions
 
 To get step-by-step instructions to achieve this goals, open the [step-by-step instructions](step-by-step.md).
+
+## Final solution
+
+You have reached the end of the hands-on assignments. If you haven't been able to do all the assignments, go to this [this repository](https://github.com/edwinvw/dapr-traffic-control) for the end result.
+
+Thanks for participating in these hands-on assignments! Hopefully you've learned about Dapr and how to use it. Obviously, these assignment barely scratch the surface of what is possible with Dapr. We have not touched upon subjects like: hardening production environments, actors, integration with Azure Functions, Azure API Management and Azure Logic Apps just to name a few. So if you're interested in learning more, I suggest you read the [Dapr documentation](https://docs.dapr.io).

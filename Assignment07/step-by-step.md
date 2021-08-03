@@ -100,7 +100,7 @@ As stated, you can reference secrets from other Dapr component configuration fil
      - finecollectionservice  
    ```
 
-Now, the output binding for the SendMail component will use the `smtp.user` and `smtp.password` secrets from the secrets file at runtime.
+Now the output binding for the SendMail component will use the `smtp.user` and `smtp.password` secrets from the secrets file at runtime.
 
 ## Step 3: Get the license key for the FineCalculator component
 
@@ -202,6 +202,8 @@ Don't forget to change the license key in the secrets file back to the correct o
 
 ## Step 6: Update to use Azure KeyVault for secrets management
 
+![secrets-management-operation-azure](./img/secrets-management-operation-azure.png)
+
 1.  Create 3 Azure KeyVault secrets.
 
     ```shell
@@ -210,7 +212,7 @@ Don't forget to change the license key in the secrets file back to the correct o
     az keyvault secret set --vault-name kv-dapr-demo --name finecalculator-licensekey --value "HX783-K2L7V-CRJ4A-5PN1G"
     ```
 
-1.  Create a service principal to allow the Dapr service to retrieve secrets from KeyVault
+1.  Create a service principal to allow the Dapr service to retrieve secrets from KeyVault.
 
     ```shell
     az ad sp create-for-rbac --name <service-principal-name> --create-cert --cert <certificate-name> --keyvault <key-vault-name> --skip-assignment --years 1
@@ -226,7 +228,7 @@ Don't forget to change the license key in the secrets file back to the correct o
     }
     ```
 
-1.  Get the object id for your service principal
+1.  Get the object id for your service principal.
 
     ```shell
     az ad sp show --id <service-principal-app-id> --query="objectId"
@@ -236,13 +238,13 @@ Don't forget to change the license key in the secrets file back to the correct o
     "<service-principal-object-id>"
     ```
 
-1.  Grant the service principal access to your KeyVault
+1.  Grant the service principal access to your KeyVault.
 
     ```shell
-    az role assignment create --role "Key Vault Secrets User" --assignee "<service-principal-object-id>" --scope "/subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>"
+    az role assignment create --role "Key Vault Secrets User" --assignee <service-principal-object-id> --scope "/subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>"
     ```
 
-1.  Download the certificate from your Azure KeyVault
+1.  Download the certificate from your Azure KeyVault.
 
     ```shell
     az keyvault secret download --vault-name "<key-vault-name>" --name "<certificate-name>" --encoding base64 --file "<certificate-name>.pfx"

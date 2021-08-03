@@ -78,7 +78,7 @@ resource eventHubExitCamListenAuthorizationRule 'Microsoft.EventHub/namespaces/e
 }
 
 resource iotHubUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: 'id-iotHub-${longName}'
+  name: 'mi-iotHub-${longName}'
   location: resourceGroup().location
 }
 
