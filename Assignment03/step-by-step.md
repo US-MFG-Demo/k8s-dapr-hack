@@ -110,7 +110,7 @@ To change the message broker component from Redis to RabbitMQ, you'll create a l
      - finecollectionservice
    ```
 
-You've now specified a the Dapr **RabbitMQ** pub/sub component: (`pubsub.rabbitmq`). In the `metadata` section, you instruct Dapr how to connect to the RabbitMQ container running on port `5672`). Ignore the other metadata for now. In the `scopes` section, you limit the usage of this component. to the TrafficControlService and FineCollectionService.
+You've now specified a the Dapr **RabbitMQ** pub/sub component: (`pubsub.rabbitmq`). In the 'spec' section notice the `metadata` section, here you instruct Dapr how to connect to the RabbitMQ container running on port `5672`). Ignore the other metadata for now. In the `scopes` section, you limit the usage of this component. to the TrafficControlService and FineCollectionService.
 
 ## Step 3: Send messages from the TrafficControlService
 
