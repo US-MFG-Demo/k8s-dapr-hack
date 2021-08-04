@@ -65,7 +65,7 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     az login
     ```
 
-1. Make sure you have selected the Azure subscription in which you want to work. Replace the 'x's with your subscription GUID or subscription name. The subscription GUID can be found in the Azure Resource Group blade from the Azure Portal.
+1.  Make sure you have selected the Azure subscription in which you want to work. Replace the 'x's with your subscription GUID or subscription name. The subscription GUID can be found in the Azure Resource Group blade from the Azure Portal.
 
     ```shell
     az account set --subscription "xxxx-xxxx-xxxx-xxxx"
@@ -82,7 +82,7 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
 
     Copy the public SSH key string. You'll need it to configure the parameter file in the next step. It can be found in the "id_rsa.pub" file that was created or updated by the `ssh-keygen` command.
 
-1. In this workshop, you'll deploy the application into a Kubernetes cluster. You'll use [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) to access cloud resources securely with Azure Active Directory. At the time of this writing, this feature is in public preview. You'll need to run the following commands to enable this feature before you create the Kubernetes cluster.
+1.  In this workshop, you'll deploy the application into a Kubernetes cluster. You'll use [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) to access cloud resources securely with Azure Active Directory. At the time of this writing, this feature is in public preview. You'll need to run the following commands to enable this feature before you create the Kubernetes cluster.
    
     ```shell
     az feature register --name EnablePodIdentityPreview --namespace Microsoft.ContainerService
@@ -264,18 +264,12 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     az aks update --name "<aksname>" --resource-group "<resource-group-name>" --attach-acr "<acrname>"
     ```
 
-1.  Assign RBAC permissions to KeyVault
+1.  Assign vault permissions to KeyVault
 
     You will need to assign yourself access to the KeyVault so you can create secrets.
 
     ```shell
-    az role assignment create --role "Key Vault Secrets Officer" --assignee "<user principal name>" --scope /subscriptions/<subscriptionId>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>
-    ```
-
-1.  Assign Managed Identity to KeyVault
-
-    ```shell
-    az role assignment create --role "Key Vault Secrets User" --assignee "<manged identity client id>" --scope /subscriptions/<subscriptionId>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>
+    az keyvault set-policy --name kv-dapr-ussc-demo --upn dwight.k.schrute@dunder-mifflin.com --secret-permissions get list set delete --certificate-permissions get list create delete update
     ```
 
 1.  Go to [assignment 1](../Assignment01/README.md).

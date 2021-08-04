@@ -10,7 +10,6 @@ To complete this assignment, you must reach the following goals:
 
 - Successfully deploy all 3 services (VehicleRegistrationService, TrafficControlService & FineCollectionService) to an AKS cluster.
 - Successfully run the Simulation service locally that connects to your AKS-hosted services
-- Successfully expose Zipkin for monitoring container logs
 
 ## DIY instructions
 

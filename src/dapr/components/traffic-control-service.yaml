@@ -1,9 +1,9 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: trafficcontrolservice 
+  name: traffic-control-service 
   labels:
-    app: trafficcontrolservice
+    app: traffic-control-service
 spec:
   type: ClusterIP
   ports:
@@ -11,24 +11,24 @@ spec:
     port: 80
     targetPort: 3500
   selector:
-    app: trafficcontrolservice
+    app: traffic-control-service
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: trafficcontrolservice
+  name: traffic-control-service
   labels:
-    app: trafficcontrolservice
+    app: traffic-control-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: trafficcontrolservice
+      app: traffic-control-service
   template:
     metadata:
       labels:
-        app: trafficcontrolservice
+        app: traffic-control-service
       annotations:
         dapr.io/enabled: "true"
         dapr.io/app-id: "trafficcontrolservice"
@@ -41,7 +41,7 @@ spec:
         dapr.io/config: "zipkin"
     spec:
       containers:
-      - name: trafficcontrolservice
+      - name: traffic-control-service
         image: crdaprusscdemo.azurecr.io/trafficcontrolservice:assignment08
         ports:
         - containerPort: 6000
@@ -74,19 +74,19 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: trafficcontrolservice
+  name: traffic-control-service
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: trafficcontrolservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io
+  - host: traffic-control-service.e13e6fb6d2534a41ae60.southcentralus.aksapp.io
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service: 
-            name: trafficcontrolservice
+            name: traffic-control-service
             port: 
               number: 80
               

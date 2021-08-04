@@ -299,13 +299,13 @@ Azure IoT Hub can be set up as a [MQTT queue](https://docs.microsoft.com/en-us/a
     az iot hub device-identity connection-string show --device-id simulation --hub-name <iot-hub-name>
     ```
 
-1.  Add the NuGet package Microsoft.Azure.Devices.Client to the Simulation project.
+1.  Add the NuGet package Microsoft.Azure.Devices.Client to the Simulation (`src/Simulation` directory) project.
 
     ```shell
     dotnet add package Microsoft.Azure.Devices.Client
     ```
 
-1.  Replace the implementation of the src/Simulation/Proxies/MqttTrafficControlService.cs class with similar code to below.  
+1.  Replace the implementation of the `src/Simulation/Proxies/MqttTrafficControlService.cs` class with similar code to below.  
 
     ```csharp
     using Microsoft.Azure.Devices.Client;
@@ -357,7 +357,7 @@ Azure IoT Hub can be set up as a [MQTT queue](https://docs.microsoft.com/en-us/a
     az storage account keys list --account-name <storage-account-name> --resource-group <resource-group-name> --query [0].value
     ```
 
-1.  Replace the implementation of the src/dapr/components/entrycam.yaml file with code similar to below.
+1.  Replace the implementation of the `src/dapr/components/entrycam.yaml` file with code similar to below.
 
     ```yaml
     apiVersion: dapr.io/v1alpha1
@@ -382,7 +382,7 @@ Azure IoT Hub can be set up as a [MQTT queue](https://docs.microsoft.com/en-us/a
     - trafficcontrolservice
     ```
 
-1.  Replace the implementation of the src/dapr/components/exitcam.yaml file with code similar to above.
+1.  Replace the implementation of the `src/dapr/components/exitcam.yaml` file with code similar to above.
 
 1.  Re-run all the services.
 
