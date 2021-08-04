@@ -110,7 +110,7 @@ To change the message broker component from Redis to RabbitMQ, you'll create a l
      - finecollectionservice
    ```
 
-You've now specified a the Dapr **RabbitMQ** pub/sub component: (`pubsub.rabbitmq`). In the `metadata` section, you instruct Dapr how to connect to the RabbitMQ container running on port `5672`). Ignore the other metadata for now. In the `scopes` section, you limit the usage of this component. to the TrafficControlService and FineCollectionService.
+You've now specified a the Dapr **RabbitMQ** pub/sub component: (`pubsub.rabbitmq`). In the `spec` section notice the `metadata` section, here you instruct Dapr how to connect to the RabbitMQ container running on port `5672`). Ignore the other metadata for now. In the `scopes` section, you limit the usage of this component. to the TrafficControlService and FineCollectionService.
 
 ## Step 3: Send messages from the TrafficControlService
 
@@ -177,7 +177,7 @@ You are going to prepare the FineCollectionService so that it can receive messag
 
    The `route` field tells Dapr to forward messages published to the `collectfine` topic to the `/collectfine` endpoint. From there, the subscriber can handle each message. The `pubsubname` links the subscription.yaml file to the `pubsub` component. The `scopes` field restricts this subscription to only the service with the `finecollectionservice` app-id.
 
-Now the FineCollectionService is ready to receive published messages through Dapr. But there is a catch! Dapr warps pub/sub messages inside the open-source [CloudEvents](https://cloudevents.io/) message format. Upon receipt, the subscriber must transform the message to a `CloudEvent`. You'll start by manually parsing the incoming JSON. Later, you'll evolve the implementation to use the ASP.NET Core model binding via the Dapr SDK for .NET.
+Now the FineCollectionService is ready to receive published messages through Dapr. But there is a catch! Dapr wraps pub/sub messages inside the open-source [CloudEvents](https://cloudevents.io/) message format. Upon receipt, the subscriber must transform the message to a `CloudEvent`. You'll start by manually parsing the incoming JSON. Later, you'll evolve the implementation to use the ASP.NET Core model binding via the Dapr SDK for .NET.
 
  > CloudEvents is a standardized messaging format, providing a common way to describe event information across platforms. Dapr embraces CloudEvents. For more information about CloudEvents, see the cloudevents specification
 
@@ -530,7 +530,7 @@ The answer? Change the YAML configuration file. There are absolutely no code cha
 
    > What changed? `namespace`, `type`, and the underlying `spec` metadata. 
 
-1. You need to provide a connection string for Azure Service Bus. Normally, you'd create a [Shared Access Secret or enable authentication/authorization with AAD](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-authentication-and-authorization). For now, however, keep your focus on Dapr. In the Service Bus portal blade, click on `Shared access policies` and then the `RootManagerSharedAccessKey` Copy the connection string value from `Primary Connection String`' Close the SAS dialog box and paste the connection string into the `pubsub' YAML file.
+1. You need to provide a connection string for Azure Service Bus. Normally, you'd create a [Shared Access Signature or enable authentication/authorization with AAD](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-authentication-and-authorization). For now, however, keep your focus on Dapr. In the Service Bus portal blade, click on `Shared access policies` and then the `RootManagerSharedAccessKey` Copy the connection string value from `Primary Connection String`' Close the SAS dialog box and paste the connection string into the `pubsub' YAML file.
 
     > Warnings: (1) Never use the RootManageSharedAccessKey in real-world application. (2) Never expose the connection string in plain text. In a real world application you'd create a custom shared access key and access it from a secure secret store. You'll do that in a later assignment.
 
