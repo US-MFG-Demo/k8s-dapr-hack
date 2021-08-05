@@ -4,11 +4,9 @@
 
 In this assignment, you will use the open-source [MailDev](https://github.com/maildev/maildev) component, running inside in a container, as your SMTP server. This is a development SMTP server that doesn't actually send out emails (by default), but collects them and shows them in a built-in inbox. The tool extremely handy for test or demo scenarios. You will run this server as a Docker container.
 
-<<<<<<< HEAD
 ![output-binding-operation](./img/output-binding-operation.png)
-=======
+
 Then you will repoint the output bindings to an Azure Logic App that will send out the emails.
->>>>>>> main
 
 ## Step 1: Run the SMTP server
 
