@@ -223,14 +223,14 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     kubectl config get-contexts
     ```
 
-    Your results should look something like this.
+    Make sure that you see a listing for `aks-dapr-<your value>` and that it has a star next to it as shown below:
 
     ```shell
     CURRENT  NAME                   CLUSTER                AUTHINFO                                               NAMESPACE
     *        aks-dapr-<your value>  aks-dapr-<your value>  clusterUser_rg-dapr-<your value>_aks-dapr-<your value> blah-blah-blah
     ```
    
-1.  Install Dapr in your cluster
+1.  Install Dapr in your AKS cluster
 
     Run the following command to initialize Dapr in your Kubernetes cluster using your current context.
 
@@ -274,16 +274,16 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
 
 1.  Assign RBAC permissions to KeyVault
 
-    You will need to assign yourself access to the KeyVault so you can create secrets.
+    You'll need access to the KeyVault so you can create secrets. The following command will assign you to KeyVault. Replace the placeholders in `<brackets>` with value from your environment:
 
     ```shell
     az role assignment create --role "Key Vault Secrets Officer" --assignee "<user principal name>" --scope /subscriptions/<subscriptionId>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>
     ```
 
-1.  Assign Managed Identity to KeyVault
+1.  Assign Managed Identity to KeyVault. You can find the `managed identity client id` in the Managed Identity
 
     ```shell
-    az role assignment create --role "Key Vault Secrets User" --assignee "<manged identity client id>" --scope /subscriptions/<subscriptionId>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>
+    az role assignment create --role "Key Vault Secrets User" --assignee "<managed identity client id>" --scope /subscriptions/<subscriptionId>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>
     ```
 
 1.  Go to [assignment 1](../Assignment01/README.md).
