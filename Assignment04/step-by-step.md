@@ -3,6 +3,8 @@
 
 In this assignment, you'll evolve the TrafficControl application to leverage the Dapr state management building block. Once configured, it'll store the vehicle state as a car passes through the entry-point camera. The operation takes place in the TrafficControlService.
 
+![state-mangement-operation](./img/state-management-operation.png)
+
 ## Step 1: Use the Dapr state management building block
 
 First, you need to update the existing state management configuration file:
@@ -347,7 +349,9 @@ Now you're ready to test the application. Just repeat steps 2a and 2b.
 
 ## Step 4: Use Azure Cache for Redis as state store
 
-Now, you can also use Azure Cache for Redis instead of the default state store. This will require no code changes, similar to replacing *RabbitMq* with Azure Service Bus in Assignment 3 required no code changes either. 
+Now, you can also use Azure Cache for Redis instead of the default state store. This will require no code changes, similar to replacing *RabbitMq* with Azure Service Bus in Assignment 3 required no code changes either.
+
+![state-management-opeation-azure](./img/state-management-operation-azure.png)
 
 1. Update the `src/dapr/components/statestore.yaml` file with the key/value pairs for your Azure Redis Cache instance. You can find these on the Overview blade
    of your Azure Redis Cache instance. Make sure you add the **6380** port number after the host URI.

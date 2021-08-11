@@ -15,17 +15,24 @@ For this hands-on assignment, you will add an input binding leveraging the Dapr 
 
 To complete this assignment, you must reach the following goals:
 
-- The TrafficControlService uses the Dapr MQTT input binding to receive entry- and exit-cam messages over the MQTT protocol.
+- The TrafficControlService uses the Dapr MQTT input binding to receive entry-cam and exit-cam messages over the MQTT protocol.
 - The MQTT binding uses the lightweight MQTT message broker Mosquitto that runs as part of the solution in a Docker container.
-- The Camera Simulation publishes entry- and exit-cam messages to the MQTT broker.
+- Azure IoTHub & EventHub can be substituted as the MQTT message broker.
+- The Camera Simulation publishes entry-cam and exit-cam messages to the MQTT broker.
 
 This assignment targets the operation labeled as **number 5** in the end-state setup:
 
-<img src="../img/dapr-setup.png" style="zoom: 67%;padding-top: 25px;" />
+**Local**
+
+<img src="./img/input-binding-operation.png" style="zoom: 67%;padding-top: 25px;" />
+
+**Azure**
+
+<img src="./img/input-binding-operation-azure.png" style="zoom: 67%;padding-top: 25px;" />
 
 ## DIY instructions
 
-First open the `src` folder in this repo in VS Code. Then open the [Bindings documentation](https://docs.dapr.io/developing-applications/building-blocks/bindings/) and start hacking away. As MQTT broker, you can use the lightweight MQTT broker [Mosquitto](https://mosquitto.org/).
+First open the `src` folder in this repo in VS Code. Then open the [Bindings documentation](https://docs.dapr.io/developing-applications/building-blocks/bindings/) and start hacking away. As MQTT broker, you can use the lightweight MQTT broker [Mosquitto](https://mosquitto.org/). You can also use Azure IoT Hub & Event Hub.
 
 ## Step by step instructions
 

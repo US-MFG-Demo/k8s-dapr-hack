@@ -1,9 +1,9 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: vehicleregistrationservice 
+  name: vehicle-registration-service 
   labels:
-    app: vehicleregistrationservice
+    app: vehicle-registration-service
 spec:
   type: ClusterIP
   ports:
@@ -11,24 +11,24 @@ spec:
     port: 80
     targetPort: 3500
   selector:
-    app: vehicleregistrationservice
+    app: vehicle-registration-service
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vehicleregistrationservice
+  name: vehicle-registration-service
   labels:
-    app: vehicleregistrationservice
+    app: vehicle-registration-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: vehicleregistrationservice
+      app: vehicle-registration-service
   template:
     metadata:
       labels:
-        app: vehicleregistrationservice
+        app: vehicle-registration-service
       annotations:
         dapr.io/enabled: "true"
         dapr.io/app-id: "vehicleregistrationservice"
@@ -41,7 +41,7 @@ spec:
         dapr.io/config: "zipkin"
     spec:
       containers:
-      - name: vehicleregistrationservice
+      - name: vehicle-registration-service
         image: crdaprusscdemo.azurecr.io/vehicleregistrationservice:assignment08
         ports:
         - containerPort: 6002
@@ -74,19 +74,19 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: vehicleregistrationservice
+  name: vehicle-registration-service
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: vehicleregistrationservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io
+  - host: vehicle-registration-service.e13e6fb6d2534a41ae60.southcentralus.aksapp.io
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service: 
-            name: vehicleregistrationservice
+            name: vehicle-registration-service
             port: 
               number: 80
               

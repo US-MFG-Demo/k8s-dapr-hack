@@ -1,9 +1,9 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: finecollectionservice 
+  name: fine-collection-service
   labels:
-    app: finecollectionservice
+    app: fine-collection-service
 spec:
   type: ClusterIP
   ports:
@@ -11,24 +11,24 @@ spec:
     port: 80
     targetPort: 3500
   selector:
-    app: finecollectionservice
+    app: fine-collection-service
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: finecollectionservice
+  name: fine-collection-service
   labels:
-    app: finecollectionservice
+    app: fine-collection-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: finecollectionservice
+      app: fine-collection-service
   template:
     metadata:
       labels:
-        app: finecollectionservice
+        app: fine-collection-service
         aadpodidbinding: mi-aks-dapr-ussc-demo
       annotations:
         dapr.io/enabled: "true"
@@ -42,7 +42,7 @@ spec:
         dapr.io/config: "zipkin"
     spec:
       containers:
-      - name: finecollectionservice
+      - name: fine-collection-service
         image: crdaprusscdemo.azurecr.io/finecollectionservice:assignment08
         ports:
         - containerPort: 6001
@@ -75,19 +75,19 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: finecollectionservice
+  name: fine-collection-service
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: finecollectionservice.e13e6fb6d2534a41ae60.southcentralus.aksapp.io
+  - host: fine-collection-service.e13e6fb6d2534a41ae60.southcentralus.aksapp.io
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service: 
-            name: finecollectionservice
+            name: fine-collection-service
             port: 
               number: 80
               
