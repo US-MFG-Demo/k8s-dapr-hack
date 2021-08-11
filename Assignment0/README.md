@@ -2,10 +2,10 @@
 
 ## Assignment goals
 
-In this assignment, you'll install the pre-requisites tools and software as well as create the Azure resources required for the workshop. Once you launch the script to create the Azure resources, you can move on to Assignment 1 while the resources are provisioned.
+In this assignment, you'll install the pre-requisites tools and software as well as create the Azure resources required for the workshop.
 
 > [!NOTE]
-> Resource provisioning can take up to 25 minutes, depending on the region used.
+> Resource provisioning can take up to 25 minutes, depending on the region used. Once you launch the script to create the Azure resources, you can move on to Assignment 1 while the resources are provisioned.
 
 ## Step 1. Install pre-requisites
 
@@ -17,11 +17,11 @@ In this assignment, you'll install the pre-requisites tools and software as well
 > [!IMPORTANT]
 > Your IT organization may provide you access to an Azure resource group, but not the entire subscription. If that's the case, take note of that resource group name and make sure you have `Contributor` access to it, using the instructions mentioned above.
   
-1. Install all the pre-requisites listed below and make sure they're working fine
+1. Install all the pre-requisites listed below and make sure they're working correctly:
 
    - Git ([download](https://git-scm.com/))
    - .NET 5 SDK ([download](https://dotnet.microsoft.com/download/dotnet/5.0))
-   - Visual Studio Code ([download](https://code.visualstudio.com/download)) with at least the following extensions installed:
+   - Visual Studio Code ([download](https://code.visualstudio.com/download)) with the following extensions installed:
      - [C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)
      - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
    - Docker for desktop ([download](https://www.docker.com/products/docker-desktop))
@@ -35,7 +35,7 @@ In this assignment, you'll install the pre-requisites tools and software as well
    
   - If you're running Windows, you'll need to install a **bash shell** to run some of the commands. Install either the [Git Bash](https://git-scm.com/downloads) client or the [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-Make sure the following minimum software versions are installed. This workshop has been tested with the following versions:
+Make sure the following minimum software versions are installed by executing the commands in the following table:
 
    | Software             | Version | Command Line       |
    | -------------------- | ------- | ------------------ |
@@ -54,9 +54,7 @@ Clone the Github repository for the workshop to a local folder on your machine:
 
 ## Step 3. Create Azure Resources
 
-Next, you'll create the Azure resources for the subsequent assignments.
-
-You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager/bicep/overview) and [Azure CLI](https://docs.microsoft.com/cli/azure/what-is-azure-cli) to create the required resources:
+Next, you'll create the Azure resources for the subsequent assignments using [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager/bicep/overview) and the [Azure CLI](https://docs.microsoft.com/cli/azure/what-is-azure-cli).
 
 1. If you're using [Azure Cloud Shell](https://shell.azure.com), skip this step and proceed to step 2. Open the [terminal window](https://code.visualstudio.com/docs/editor/integrated-terminal) in VS Code and make sure you're logged in to Azure
 
@@ -70,7 +68,7 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     az account set --subscription "xxxx-xxxx-xxxx-xxxx"
     ```
 
-1. Generate an SSH key pair if you don't already have one.
+1. Generate an [SSH key pair](https://docs.microsoft.com/azure/virtual-machines/linux/ssh-from-windows#overview-of-ssh-and-keys) if you don't already have one.
 
     ```shell
     ssh-keygen -t rsa -b 2048
@@ -78,14 +76,8 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
 
    - If prompted for a file name, leave the entry blank, and press enter.
    - If prompted for a passphrase, leave the entry blank, and press enter.
-
-<<<<<<< HEAD
-   Once complete, you will find the two ssh key files in the following directory: `C:\Windows\System32\config\systemprofile\.ssh`
-=======
-1.  In this workshop, you'll deploy the application into a Kubernetes cluster. You'll use [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) to access cloud resources securely with Azure Active Directory. At the time of this writing, this feature is in public preview. You'll need to run the following commands to enable this feature before you create the Kubernetes cluster.
->>>>>>> main
    
-   Right-click on the `id_rsa` file and open with Notepad. Copy the entire contents of the file which is the public key. You'll need it to configure the parameter file in an upcoming step.
+   Once complete, you'll find two SSH key files in the following directory: `c:\windows\system32\config\systemprofile\.ssh`. Right-click on the `id_rsa` file and open with Notepad. Copy the entire contents of the file which is the public key. You'll need it to configure the parameter file in an upcoming step.
     
 1. Later in this workshop, you'll deploy the completed application into a Azure Kubernetes cluster. You'll use [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) to access cloud resources securely with Azure Active Directory. You'll need to run the following commands to enable this feature before you create the Kubernetes cluster.
 
@@ -98,7 +90,7 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     ```
 
     > [!NOTE]
-    > At the time of this writing, this feature is in public preview. Public preview features are a great way to learn upcoming features, but should *never deployed* in a production environment.
+    > At the time of this writing, *AAD Pod Identity* is in public preview. Preview features are a great way to learn upcoming features, but should *never be deployed* into a production environment.
 
 1.  In the accompanying source code, modify the `src/Infrastructure/bicep/main.parameters.json` file so it contains the proper data for the deployment:
 
@@ -122,7 +114,7 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     }
     ```
 
-1.  Create a new resource group for your lab project using the `src/Infrastructure/bicep/rg.bicep` script file. In the command, make sure to replace the location parameter with the Azure region you want to use:
+1.  Create a new resource group for your lab project using the `src/Infrastructure/bicep/rg.bicep` script file. When invoking the command, replace the location parameter with the Azure region you want to use:
 
     ```shell
     cd ./src/Infrastructure/bicep/
@@ -210,16 +202,16 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
       value: sadaprmce123
     ```
 
-    Copy these values. You'll need them to configure your Dapr services.
+    Copy these values into Notepad. You'll need them to configure your Dapr services.
 
-1.  Run the following command to get the AKS credentials for your cluster.
+1.  Run the following command to fetch the AKS credentials for your cluster.
 
     ```shell
     az aks get-credentials --name "<aksname>" --resource-group "<resource-group-name>"
     ```
    
     > [!NOTE]
-    > The `az aks get-credentials` command retrieves access credentials for an AKS cluster. It merges the credentials into your local kubeconfig file.
+    > The `az aks get-credentials` command retrieves credentials for an AKS cluster. It merges the credentials into your local kubeconfig file.
 
 1.  Verify your "target" cluster is set correctly.
 
@@ -241,7 +233,8 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     ```shell
     dapr init -k
     ```
-    Your results should look something like this.
+
+    Your results should resemble the following:
 
     ```shell
     Making the jump to hyperspace...
@@ -251,13 +244,13 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     Success! Dapr has been installed to namespace dapr-system. To verify, run `dapr status -k' in your terminal. To get started, go here: https://aka.ms/dapr-getting-started
     ```
 
-    Verify with the following command.
+    Verify the Dapr deployment to your AKS cluster with the following command:
 
     ```shell
     dapr status -k
     ```
 
-    Your results should look something like this.
+    Your results should resemble the following:
 
     ```shell
     NAME                   NAMESPACE    HEALTHY  STATUS   REPLICAS  VERSION  AGE  CREATED
@@ -268,30 +261,22 @@ You'll use [Azure Bicep](https://docs.microsoft.com/azure/azure-resource-manager
     dapr-placement-server  dapr-system  True     Running  1         1.2.2    1m   2021-07-02 08:45.45
     ```
 
-1.  Assign RBAC permissions to AKS
+1.  Assign Azure Active Directory RBAC permissions to AKS
 
-    You need to grant the managed identity of AKS access to your Azure Container Registry so it can pull images. Run the following command.
+    You need to grant the AKS managed identity to your Azure Container Registry so that it can pull Docker images. Run the following command:
 
     ```shell
     az aks update --name "<aksname>" --resource-group "<resource-group-name>" --attach-acr "<acrname>"
     ```
 
-1.  Assign vault permissions to KeyVault
+    > [!NOTE] You can find the acrname (Azure Container Registry) value in the Azure Portal blade.
 
-    You'll need access to the KeyVault so you can create secrets. The following command will assign you to KeyVault. Replace the placeholders in `<brackets>` with value from your environment:
+1.  Assign permissions to KeyVault
 
-    ```shell
-<<<<<<< HEAD
-    az role assignment create --role "Key Vault Secrets Officer" --assignee "<user principal name>" --scope /subscriptions/<subscriptionId>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>
-    ```
-
-1.  Assign Managed Identity to KeyVault. You can find the `managed identity client id` in the Managed Identity
+    Lastly, assign yourself access to the KeyVault so you can create secrets:
 
     ```shell
-    az role assignment create --role "Key Vault Secrets User" --assignee "<managed identity client id>" --scope /subscriptions/<subscriptionId>/resourceGroups/<resource-group-name>/providers/Microsoft.KeyVault/vaults/<key-vault-name>
-=======
-    az keyvault set-policy --name kv-dapr-ussc-demo --upn dwight.k.schrute@dunder-mifflin.com --secret-permissions get list set delete --certificate-permissions get list create delete update
->>>>>>> main
+    az keyvault set-policy --resource-group rg-dapr-robvet --name kv-dapr-ussc-demo --upn dwight.k.schrute@dunder-mifflin.com --secret-permissions get list set delete --certificate-permissions get list create delete update
     ```
 
 1.  Go to [assignment 1](../Assignment01/README.md).
