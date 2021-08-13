@@ -1,0 +1,18 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: statestore
+spec:
+  type: state.redis
+  version: v1
+  metadata:
+  - name: redisHost
+    value: redis-dapr-ussc-demo.redis.cache.windows.net:6380
+  - name: redisPassword
+    value: qu4qw8bFmOOVlft7KVrBYFFC1YzVJvV7+v3raFBNA3M=
+  - name: actorStateStore
+    value: true
+  - name: enableTLS
+    value: true
+scopes:
+- trafficcontrolservice

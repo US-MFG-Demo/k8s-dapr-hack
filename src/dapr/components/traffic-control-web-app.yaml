@@ -1,0 +1,60 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: traffic-control-web-app-service
+  labels:
+    app: traffic-control-web-app
+spec:
+  type: ClusterIP 
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  selector:
+    app: traffic-control-web-app
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traffic-control-web-app-deployment
+  labels:
+    app: traffic-control-web-app
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: traffic-control-web-app
+      labels:
+        app: traffic-control-web-app
+    spec:
+      containers:
+      - name: traffic-control-web-app
+        image: crdaprusscdemo.azurecr.io/traffic-control-web-app:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: traffic-control-web-app
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: traffic-control-web-app
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: traffic-control-web-app.e13e6fb6d2534a41ae60.southcentralus.aksapp.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service: 
+            name: traffic-control-web-app-service
+            port: 
+              number: 80
