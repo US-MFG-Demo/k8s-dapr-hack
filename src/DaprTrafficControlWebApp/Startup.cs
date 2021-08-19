@@ -62,6 +62,8 @@ namespace DaprTrafficControlWebApp
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapHub<TrafficControlHub>("/trafficcontrolhub");
+                endpoints.MapHub<VehicleRegistrationHub>("/vehicleregistrationhub");
+                endpoints.MapHub<FineCollectionHub>("/finecollectionhub");
                 endpoints.MapFallbackToPage("/_Host");
             });
         }
