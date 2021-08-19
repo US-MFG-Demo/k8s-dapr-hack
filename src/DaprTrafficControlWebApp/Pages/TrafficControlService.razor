@@ -8,9 +8,7 @@
 @implements IAsyncDisposable
 
 <FluentButton @onclick="ToggleMonitoring" disabled="@(!IsConnected)">@MonitoringButtonText</FluentButton>
-
 <hr>
-
 <table style="width:100%">
   <thead>
     <tr>
@@ -28,12 +26,16 @@
     }
   </tbody>
 </table>
+
 @code {
     private HubConnection hubConnection;
     private List<LogMessage> messages = new List<LogMessage>();
-    private static Timer timer = new Timer(5000);
+    private const int MAX_NUMBER_OF_MESSAGES = 100;
+    private static Timer timer = new Timer();
+    private const int REFRESH_INTERVAL_IN_SECONDS = 1;
+
     protected override async Task OnInitializedAsync()
-    {
+    {    
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/trafficcontrolhub"))
             .Build();
@@ -42,9 +44,16 @@
         {
           messages.AddRange(JsonSerializer.Deserialize<List<LogMessage>>(message));
 
+          messages = messages.OrderByDescending(m => m.Timestamp).ToList();
+
+          if(messages.Count > MAX_NUMBER_OF_MESSAGES) {
+            messages.RemoveRange(MAX_NUMBER_OF_MESSAGES, messages.Count - MAX_NUMBER_OF_MESSAGES);
+          }
+
           StateHasChanged();
         });
       
+        timer.Interval = REFRESH_INTERVAL_IN_SECONDS * 1000;
         timer.Elapsed += ElapsedEventHandler;
 
         await hubConnection.StartAsync();
@@ -52,15 +61,15 @@
 
     protected void ToggleMonitoring() {
       if(!timer.Enabled) {
-      timer.Start();
+        timer.Start();
       } else {
-      timer.Stop();
+        timer.Stop();
       }
     }
 
     private async void ElapsedEventHandler(Object taskCompletionSource, ElapsedEventArgs e) 
     {
-      await hubConnection.SendAsync("StartMonitoring", 5, "traffic-control-service");
+      await hubConnection.SendAsync("StartMonitoring", 1, "traffic-control-service");
     }
 
     public bool IsConnected =>
