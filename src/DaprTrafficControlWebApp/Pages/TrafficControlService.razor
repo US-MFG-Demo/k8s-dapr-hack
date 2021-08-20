@@ -1,4 +1,22 @@
 @page "/trafficcontrolservice"
 @using DaprTrafficControlWebApp.Shared
 
-<LogViewer HubUrl="/trafficcontrolhub" ServiceName="traffic-control-service"></LogViewer>
+<FluentButton @onclick="ToggleMonitoring">@MonitoringButtonText</FluentButton>
+<hr>
+<LogViewer @ref=@logViewer HubUrl="/trafficcontrolhub" ServiceName="traffic-control-service"></LogViewer>
+
+@code {
+  private LogViewer logViewer;
+  private void ToggleMonitoring()
+  {
+    logViewer.ToggleMonitoring();
+  }
+
+  private string MonitoringButtonText
+  {
+    get 
+    {
+      return logViewer.MonitoringButtonText;
+    }
+  }
+}

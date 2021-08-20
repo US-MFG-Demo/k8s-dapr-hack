@@ -2,11 +2,13 @@ using System.Threading.Tasks;
 using k8s;
 using k8s.Models;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.SignalR;
 
 namespace DaprTrafficControlWebApp.Server.Hubs
 {
   public class SimulationHub : KubernetesHub
   {
+    const string SERVICE_NAME = "simulation";
     LogMonitoringHub logMonitoringHub;
     public SimulationHub() : base("dapr-trafficcontrol")
     {
@@ -20,12 +22,16 @@ namespace DaprTrafficControlWebApp.Server.Hubs
 
     public async void StartSimulating()
     {
-      await Scale(1);
+      IHubCallerClients clients = Clients;
+      await Scale(1).ContinueWith(async _ => {
+        await clients.All.SendAsync("ReceiveStartSimulating"); });
     }
 
     public async void StopSimulating()
     {
-      await Scale(0);
+      IHubCallerClients clients = Clients;
+      await Scale(0).ContinueWith(async _ => {
+        await clients.All.SendAsync("ReceiveStopSimulating"); });
     }
 
     private async Task Scale(int replicas)
@@ -35,9 +41,26 @@ namespace DaprTrafficControlWebApp.Server.Hubs
       var patch = new V1Patch(jsonPatch, V1Patch.PatchType.JsonPatch);
       await client.PatchNamespacedDeploymentScaleAsync(
         body: patch,
-        name: "simulation",
+        name: SERVICE_NAME,
         namespaceParameter: namespaceName
       );
+    }
+
+    public async void IsSimulating()
+    {
+      IHubCallerClients clients = Clients;
+
+      var pods = await client.ListNamespacedPodAsync(namespaceName);
+      foreach (var pod in pods.Items)
+      {
+        if (pod.Metadata.Name.Contains(SERVICE_NAME) && pod.Status.Phase == "Running")
+        {
+          await clients.All.SendAsync("ReceiveIsSimulating", true);
+          return;
+        }
+      }
+
+      await clients.All.SendAsync("ReceiveIsSimulating", false);
     }
   }
 }

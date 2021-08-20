@@ -1,14 +1,18 @@
 @using DaprTrafficControlWebApp.Shared
 @using Microsoft.AspNetCore.SignalR.Client
+@using System.Timers
 @inject NavigationManager NavigationManager
 
 <FluentButton @onclick="ToggleSimulating">@SimulateButtonText</FluentButton>
+<FluentButton @onclick="ToggleMonitoring">@MonitoringButtonText</FluentButton>
 <hr>
-<LogViewer HubUrl="/simulationhub" ServiceName="simulation"></LogViewer>
+<LogViewer @ref=@logViewer HubUrl="/simulationhub" ServiceName="simulation"></LogViewer>
 
 @code {
   private HubConnection hubConnection;
   private bool isSimulating = false;
+  private LogViewer logViewer;
+  private string SimulateButtonText { get; set; }
 
   protected override async Task OnInitializedAsync()
   {
@@ -16,13 +20,59 @@
     .WithUrl(NavigationManager.ToAbsoluteUri("/simulationhub"))
     .Build();
 
+    hubConnection.On<bool>("ReceiveIsSimulating", (message) =>
+    {
+      isSimulating = message;
+
+      if (!isSimulating)
+      {
+        SimulateButtonText = "Start Simulating";
+      }
+      else
+      {
+        SimulateButtonText = "Stop Simulating";
+      }
+
+      StateHasChanged();
+    });
+
+    hubConnection.On("ReceiveStartSimulating", () =>
+    {
+      Timer timer = new Timer(5000);
+      timer.AutoReset = false;
+      timer.Elapsed += async (sender, e) => {
+        await hubConnection.SendAsync("IsSimulating");
+      };
+      timer.Start();
+      
+      StateHasChanged();
+    });
+
+    hubConnection.On("ReceiveStopSimulating", () =>
+    {      
+      Timer timer = new Timer(5000);
+      timer.AutoReset = false;
+      timer.Elapsed += async (sender, e) => {
+        await hubConnection.SendAsync("IsSimulating");
+      };
+      timer.Start();
+      StateHasChanged();
+    });
+
     await hubConnection.StartAsync();
   }
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if(firstRender)
+    {
+      await hubConnection.SendAsync("IsSimulating");
+    }
+  }
+
   private async void ToggleSimulating()
   {
-    isSimulating = !isSimulating;
-
-    if (isSimulating)
+    if (!isSimulating)
     {
       await hubConnection.SendAsync("StartSimulating");
     }
@@ -32,18 +82,16 @@
     }
   }
 
-  private string SimulateButtonText
+  private void ToggleMonitoring()
   {
-    get
+    logViewer.ToggleMonitoring();
+  }
+
+  private string MonitoringButtonText
+  {
+    get 
     {
-      if (!isSimulating)
-      {
-        return "Start Simulating";
-      }
-      else
-      {
-        return "Stop Simulating";
-      }
+      return logViewer.MonitoringButtonText;
     }
   }
 }

@@ -15,14 +15,13 @@ namespace DaprTrafficControlWebApp.Server.Hubs
     public LogMonitoringHub(string namespaceName) : base(namespaceName) {}
     public async Task StartMonitoring(int sinceSeconds, string serviceName)
     {
-      var pods = client.ListNamespacedPod(namespaceName);
+      IHubCallerClients clients = Clients;
+      var pods = await client.ListNamespacedPodAsync(namespaceName);
 
       foreach (var pod in pods.Items)
       {
         if (pod.Metadata.Name.Contains(serviceName))
         {
-          IHubCallerClients clients = Clients;
-
           var response = await client.ReadNamespacedPodLogWithHttpMessagesAsync(
             name: pod.Metadata.Name,
             namespaceParameter: pod.Metadata.NamespaceProperty,

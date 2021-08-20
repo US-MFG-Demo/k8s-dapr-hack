@@ -1,4 +1,22 @@
 @page "/finecollectionservice"
 @using DaprTrafficControlWebApp.Shared
 
-<LogViewer HubUrl="/finecollectionhub" ServiceName="fine-collection-service"></LogViewer>
+<FluentButton @onclick="ToggleMonitoring">@MonitoringButtonText</FluentButton>
+<hr>
+<LogViewer @ref=@logViewer HubUrl="/finecollectionhub" ServiceName="fine-collection-service"></LogViewer>
+
+@code {
+  private LogViewer logViewer;
+  private void ToggleMonitoring()
+  {
+    logViewer.ToggleMonitoring();
+  }
+
+  private string MonitoringButtonText
+  {
+    get 
+    {
+      return logViewer.MonitoringButtonText;
+    }
+  }
+}
