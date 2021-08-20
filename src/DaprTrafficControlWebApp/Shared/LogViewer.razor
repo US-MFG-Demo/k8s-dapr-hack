@@ -29,7 +29,7 @@
   private HubConnection hubConnection;
   private List<LogMessage> messages = new List<LogMessage>();
   private const int MAX_NUMBER_OF_MESSAGES = 100;
-  private static Timer timer = new Timer();
+  private Timer timer = new Timer();
   private const int REFRESH_INTERVAL_IN_SECONDS = 1;
 
   [Parameter]
@@ -44,7 +44,7 @@
     .WithUrl(NavigationManager.ToAbsoluteUri(HubUrl))
     .Build();
 
-    hubConnection.On<string>("ReceiveMessage", (message) =>
+    hubConnection.On<string>("ReceiveLogMessages", (message) =>
     {
       messages.AddRange(JsonSerializer.Deserialize<List<LogMessage>>(message));
 
@@ -64,7 +64,7 @@
     await hubConnection.StartAsync();
   }
 
-  protected void ToggleMonitoring()
+  private void ToggleMonitoring()
   {
     if (!timer.Enabled)
     {

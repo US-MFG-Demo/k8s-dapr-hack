@@ -61,6 +61,7 @@ namespace DaprTrafficControlWebApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();
+                endpoints.MapHub<SimulationHub>("/simulationhub");
                 endpoints.MapHub<TrafficControlHub>("/trafficcontrolhub");
                 endpoints.MapHub<VehicleRegistrationHub>("/vehicleregistrationhub");
                 endpoints.MapHub<FineCollectionHub>("/finecollectionhub");

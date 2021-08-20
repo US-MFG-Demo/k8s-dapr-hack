@@ -1,0 +1,49 @@
+@using DaprTrafficControlWebApp.Shared
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavigationManager
+
+<FluentButton @onclick="ToggleSimulating">@SimulateButtonText</FluentButton>
+<hr>
+<LogViewer HubUrl="/simulationhub" ServiceName="simulation"></LogViewer>
+
+@code {
+  private HubConnection hubConnection;
+  private bool isSimulating = false;
+
+  protected override async Task OnInitializedAsync()
+  {
+    hubConnection = new HubConnectionBuilder()
+    .WithUrl(NavigationManager.ToAbsoluteUri("/simulationhub"))
+    .Build();
+
+    await hubConnection.StartAsync();
+  }
+  private async void ToggleSimulating()
+  {
+    isSimulating = !isSimulating;
+
+    if (isSimulating)
+    {
+      await hubConnection.SendAsync("StartSimulating");
+    }
+    else
+    {
+      await hubConnection.SendAsync("StopSimulating");
+    }
+  }
+
+  private string SimulateButtonText
+  {
+    get
+    {
+      if (!isSimulating)
+      {
+        return "Start Simulating";
+      }
+      else
+      {
+        return "Stop Simulating";
+      }
+    }
+  }
+}

@@ -10,19 +10,10 @@ using Microsoft.Rest;
 
 namespace DaprTrafficControlWebApp.Server.Hubs
 {
-  public class LogMonitoringHub : Hub
+  public class LogMonitoringHub : KubernetesHub
   {
-    KubernetesClientConfiguration config;
-    IKubernetes client;
-    string namespaceName;
-
-    public LogMonitoringHub(string namespaceName)
-    {
-      config = KubernetesClientConfiguration.BuildDefaultConfig();
-      client = new Kubernetes(config);
-      this.namespaceName = namespaceName;
-    }
-    public async void StartMonitoring(int sinceSeconds, string serviceName)
+    public LogMonitoringHub(string namespaceName) : base(namespaceName) {}
+    public async Task StartMonitoring(int sinceSeconds, string serviceName)
     {
       var pods = client.ListNamespacedPod(namespaceName);
 
@@ -64,7 +55,7 @@ namespace DaprTrafficControlWebApp.Server.Hubs
         }
       }
 
-      await clients.All.SendAsync("ReceiveMessage", JsonSerializer.Serialize(messages));
+      await clients.All.SendAsync("ReceiveLogMessages", JsonSerializer.Serialize(messages));
     }
   }
 }
