@@ -7,6 +7,8 @@ using TrafficControlService.Models;
 using System.Net.Http;
 using System.Net.Http.Json;
 using TrafficControlService.Repositories;
+using Azure.Messaging.EventHubs;
+using System.Text;
 
 namespace TrafficControlService.Controllers
 {
@@ -96,7 +98,8 @@ namespace TrafficControlService.Controllers
 
                     // publish speedingviolation
                     var message = JsonContent.Create<SpeedingViolation>(speedingViolation);
-                    await _httpClient.PostAsync("http://localhost:6001/collectfine", message);
+                    //await _httpClient.PostAsync("http://localhost:6001/collectfine", message);
+                    await _httpClient.PostAsync("http://localhost:3500/v1.0/publish/pubsub/collectfine", message);
                 }
 
                 return Ok();

@@ -20,7 +20,7 @@ namespace DaprTrafficControlWebApp.Server.Hubs
 
       foreach (var pod in pods.Items)
       {
-        if (pod.Metadata.Name.Contains(serviceName))
+        if (pod.Metadata.Name.Contains(serviceName) && pod.Status.Phase == "Running")
         {
           var response = await client.ReadNamespacedPodLogWithHttpMessagesAsync(
             name: pod.Metadata.Name,

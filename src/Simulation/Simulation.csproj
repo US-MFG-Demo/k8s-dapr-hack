@@ -5,4 +5,10 @@
     <TargetFramework>netcoreapp5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0" />
+    <PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.37.2" />
+    <PackageReference Include="System.Net.Mqtt" Version="0.6.16-beta" />
+  </ItemGroup>
+
 </Project>

@@ -15,5 +15,6 @@ resources:
 - fine-collection-service.yaml
 - traffic-control-service.yaml
 - traffic-control-web-app.yaml
+- simulation.yaml
 
 namespace: dapr-trafficcontrol

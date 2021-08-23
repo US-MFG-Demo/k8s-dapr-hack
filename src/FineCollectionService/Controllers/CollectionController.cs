@@ -7,6 +7,8 @@ using FineCollectionService.Models;
 using FineCollectionService.Proxies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Dapr.Client;
+using Newtonsoft.Json.Linq;
 
 namespace FineCollectionService.Controllers
 {
@@ -20,7 +22,7 @@ namespace FineCollectionService.Controllers
         private readonly VehicleRegistrationService _vehicleRegistrationService;
 
         public CollectionController(ILogger<CollectionController> logger,
-            IFineCalculator fineCalculator, VehicleRegistrationService vehicleRegistrationService)
+            IFineCalculator fineCalculator, VehicleRegistrationService vehicleRegistrationService, [FromServices] DaprClient daprClient, HttpClient httpClient)
         {
             _logger = logger;
             _fineCalculator = fineCalculator;
@@ -29,14 +31,37 @@ namespace FineCollectionService.Controllers
             // set finecalculator component license-key
             if (_fineCalculatorLicenseKey == null)
             {
-                _fineCalculatorLicenseKey = "HX783-K2L7V-CRJ4A-5PN1G";
+                //_fineCalculatorLicenseKey = "HX783-K2L7V-CRJ4A-5PN1G";
+                var secrets = daprClient.GetSecretAsync(
+                    "trafficcontrol-secrets", "finecalculator-licensekey").Result;
+                _logger.LogInformation($"LICENSE KEY: {secrets["finecalculator-licensekey"]}");
+                _fineCalculatorLicenseKey = secrets["finecalculator-licensekey"];
             }
+
+            httpClient.DefaultRequestHeaders.Clear();
+            var response = httpClient.GetAsync("http://localhost:3500/v1.0/secrets/trafficcontrol-secrets/finecalculator-licensekey").Result;
+            _logger.LogInformation(response.Content.ReadAsStringAsync().Result);
         }
 
         [Route("collectfine")]
         [HttpPost()]
-        public async Task<ActionResult> CollectFine(SpeedingViolation speedingViolation)
+        //public async Task<ActionResult> CollectFine(SpeedingViolation speedingViolation)
+        public async Task<ActionResult> CollectFine([FromBody] System.Text.Json.JsonDocument cloudevent, [FromServices] DaprClient daprClient, [FromServices] HttpClient httpClient)
         {
+            httpClient.DefaultRequestHeaders.Clear();
+            var response = httpClient.GetAsync("http://localhost:3500/v1.0/secrets/trafficcontrol-secrets/finecalculator-licensekey").Result;
+            _logger.LogInformation(response.Content.ReadAsStringAsync().Result);
+
+            _logger.LogInformation($"LICENSE KEY: {_fineCalculatorLicenseKey}");
+            var data = cloudevent.RootElement.GetProperty("data");
+            var speedingViolation = new SpeedingViolation
+            {
+                VehicleId = data.GetProperty("vehicleId").GetString(),
+                RoadId = data.GetProperty("roadId").GetString(),
+                Timestamp = data.GetProperty("timestamp").GetDateTime(),
+                ViolationInKmh = data.GetProperty("violationInKmh").GetInt32()
+            };
+
             decimal fine = _fineCalculator.CalculateFine(_fineCalculatorLicenseKey, speedingViolation.ViolationInKmh);
 
             // get owner info
@@ -52,7 +77,23 @@ namespace FineCollectionService.Controllers
                 $"at {speedingViolation.Timestamp.ToString("hh:mm:ss")}.");
 
             // send fine by email
-            // TODO
+            var body = EmailUtils.CreateEmailBody(speedingViolation, vehicleInfo, fineString);
+            var metadata = new Dictionary<string, string>
+            {
+                ["emailFrom"] = "noreply@cfca.gov",
+                ["emailTo"] = "jordanbean@microsoft.com",//vehicleInfo.OwnerEmail,
+                ["subject"] = $"Speeding violation on the {speedingViolation.RoadId}"
+            };
+
+            dynamic email = new JObject();
+            email.from = "noreply@cfca.gov";
+            email.to = "jordanbean@microsoft.com";
+            email.subject = $"Speeding violation on the {speedingViolation.RoadId}";
+            email.body = body;
+
+            var jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(email);
+
+            await daprClient.InvokeBindingAsync("sendmail", "create", jsonString);
 
             return Ok();
         }

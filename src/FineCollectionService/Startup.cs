@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace FineCollectionService
 {
@@ -20,10 +21,16 @@ namespace FineCollectionService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
+
             services.AddSingleton<IFineCalculator, HardCodedFineCalculator>();
 
             // add service proxies
             services.AddHttpClient();
+            services.AddDaprClient(builder => builder
+                .UseHttpEndpoint($"http://localhost:3500")
+                .UseGrpcEndpoint($"http://localhost:50001"));
+
             services.AddSingleton<VehicleRegistrationService>();
 
             services.AddControllers();

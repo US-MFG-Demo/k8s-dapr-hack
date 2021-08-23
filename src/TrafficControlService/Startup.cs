@@ -20,12 +20,15 @@ namespace TrafficControlService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
+
             services.AddSingleton<ISpeedingViolationCalculator>(
                 new DefaultSpeedingViolationCalculator("A12", 10, 100, 5));
 
             services.AddHttpClient();
 
-            services.AddSingleton<IVehicleStateRepository, InMemoryVehicleStateRepository>();
+            //services.AddSingleton<IVehicleStateRepository, InMemoryVehicleStateRepository>();
+            services.AddSingleton<IVehicleStateRepository, DaprVehicleStateRepository>();
 
             services.AddControllers();
         }
