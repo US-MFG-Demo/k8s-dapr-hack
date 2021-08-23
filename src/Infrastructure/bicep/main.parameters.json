@@ -12,6 +12,6 @@
         "value": "robvet"
     },
     "publicSSHKey": {
-        "value" : "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPyMVtJNJdMZpUmjr3tLDpijB4/UBSLgwPHqJ6UVGSOBpN3apHlmqDjJTiCoPYNlAM/Y47C21NS/oFumqJLSFaNoxsfZmWNWAprqMBNo0GgSYxg29P0UD3MUp7f+VPGOEoB6OXCqd5ScqDDmxI0okZgKKGyDDvxnJm2OR6d/vCKDj2aDyUQBi4kShEdUlAb+UBLanA4y0nuoqG86dihk+YwpCnGmy8VEoOEnp7PlFJ8Ex2Hv5XV7iIkrEaSwYcxkLTyOVM1q2J6faL3lw9x7ULiuPbfQCIZrCLuQTwbe+lQqmxzLDjDopUBhDf8lkHBE1DmZBZwKi60tDuq/9TChgF NORTHAMERICA+robvet@DESKTOP-JTR80EB"
+        "value" : "ssh-rsa <input your key>"
     }
 }
