@@ -1,12 +1,23 @@
 @page "/trafficcontrolservice"
 @using DaprTrafficControlWebApp.Shared
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.SignalR.Client
 
 <FluentButton @onclick="ToggleMonitoring">@MonitoringButtonText</FluentButton>
 <hr>
-<LogViewer @ref=@logViewer HubUrl="/trafficcontrolhub" ServiceName="traffic-control-service"></LogViewer>
+<LogViewer @ref=@logViewer HubConnection=@hubConnection ServiceName="traffic-control-service"></LogViewer>
 
 @code {
   private LogViewer logViewer;
+  private HubConnection hubConnection;
+  private const string TRAFFIC_CONTROL_SERVICE_HUB_URL = "/trafficcontrolhub";
+
+  protected override void OnInitialized()
+  {
+    hubConnection = new HubConnectionBuilder()
+    .WithUrl(NavigationManager.ToAbsoluteUri(TRAFFIC_CONTROL_SERVICE_HUB_URL))
+    .Build();
+  }
   private void ToggleMonitoring()
   {
     logViewer.ToggleMonitoring();

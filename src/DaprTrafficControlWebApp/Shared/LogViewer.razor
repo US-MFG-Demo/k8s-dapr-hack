@@ -2,8 +2,6 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.Timers
 @using System.Text.Json
-@inject NavigationManager NavigationManager
-@implements IAsyncDisposable
 
 <table style="width:100%">
   <thead>
@@ -24,25 +22,19 @@
 </table>
 
 @code {
-  private HubConnection hubConnection;
+  [Parameter]
+  public HubConnection HubConnection { get; set; }
   private List<LogMessage> messages = new List<LogMessage>();
   private const int MAX_NUMBER_OF_MESSAGES = 100;
   private Timer timer = new Timer();
   private const int REFRESH_INTERVAL_IN_SECONDS = 1;
 
   [Parameter]
-  public string HubUrl { get; set; }
-
-  [Parameter]
   public string ServiceName { get; set; }
 
   protected override async Task OnInitializedAsync()
   {
-    hubConnection = new HubConnectionBuilder()
-    .WithUrl(NavigationManager.ToAbsoluteUri(HubUrl))
-    .Build();
-
-    hubConnection.On<string>("ReceiveLogMessages", (message) =>
+    HubConnection.On<string>("ReceiveLogMessages", (message) =>
     {
       messages.AddRange(JsonSerializer.Deserialize<List<LogMessage>>(message));
 
@@ -59,7 +51,7 @@
     timer.Interval = REFRESH_INTERVAL_IN_SECONDS * 1000;
     timer.Elapsed += ElapsedEventHandler;
 
-    await hubConnection.StartAsync();
+    await HubConnection.StartAsync();
   }
 
   public void ToggleMonitoring()
@@ -76,19 +68,11 @@
 
   private async void ElapsedEventHandler(Object taskCompletionSource, ElapsedEventArgs e)
   {
-    await hubConnection.SendAsync("StartMonitoring", 1, ServiceName);
+    await HubConnection.SendAsync("StartMonitoring", 1, ServiceName);
   }
 
-  public bool IsConnected =>
-  hubConnection.State == HubConnectionState.Connected;
-
-  public async ValueTask DisposeAsync()
+  public void Dispose()
   {
-    if (hubConnection is not null)
-    {
-      await hubConnection.DisposeAsync();
-    }
-
     timer.Elapsed -= ElapsedEventHandler;
   }
 

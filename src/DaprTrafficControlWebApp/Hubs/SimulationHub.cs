@@ -6,18 +6,11 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace DaprTrafficControlWebApp.Server.Hubs
 {
-  public class SimulationHub : KubernetesHub
+  public class SimulationHub : LogMonitoringHub
   {
     const string SERVICE_NAME = "simulation";
-    LogMonitoringHub logMonitoringHub;
     public SimulationHub() : base("dapr-trafficcontrol")
     {
-      logMonitoringHub = new LogMonitoringHub("dapr-trafficcontrol");
-    }
-
-    public async void StartMonitoring(int sinceSeconds, string serviceName)
-    {
-      await logMonitoringHub.StartMonitoring(sinceSeconds, serviceName);
     }
 
     public async void StartSimulating()

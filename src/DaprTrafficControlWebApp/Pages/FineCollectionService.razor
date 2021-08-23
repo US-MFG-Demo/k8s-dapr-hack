@@ -1,12 +1,23 @@
 @page "/finecollectionservice"
 @using DaprTrafficControlWebApp.Shared
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavigationManager
 
 <FluentButton @onclick="ToggleMonitoring">@MonitoringButtonText</FluentButton>
 <hr>
-<LogViewer @ref=@logViewer HubUrl="/finecollectionhub" ServiceName="fine-collection-service"></LogViewer>
+<LogViewer @ref=@logViewer HubConnection=@hubConnection ServiceName="fine-collection-service"></LogViewer>
 
 @code {
   private LogViewer logViewer;
+  private HubConnection hubConnection;
+  private const string FINE_COLLECTION_SERVICE_HUB_URL = "/finecollectionhub";
+
+  protected override void OnInitialized()
+  {
+    hubConnection = new HubConnectionBuilder()
+    .WithUrl(NavigationManager.ToAbsoluteUri(FINE_COLLECTION_SERVICE_HUB_URL))
+    .Build();
+  }
   private void ToggleMonitoring()
   {
     logViewer.ToggleMonitoring();
