@@ -77,29 +77,6 @@ resource eventHubExitCamListenAuthorizationRule 'Microsoft.EventHub/namespaces/e
   }
 }
 
-resource iotHubUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: 'mi-iotHub-${longName}'
-  location: resourceGroup().location
-}
-
-resource iotHubUserEventHubEntryCamEventHubDataSenderRoleAssignment 'Microsoft.Authorization/roleAssignments@2018-01-01-preview' = {
-  name: guid(resourceGroup().id, iotHubUserAssignedIdentity.name, 'entrycam')
-  properties: {
-    principalId: iotHubUserAssignedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(subscription().subscriptionId, 'Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')
-  }
-  scope: eventHubEntryCam
-}
-
-resource iotHubUserEventHubExitCamEventHubDataSenderRoleAssignment 'Microsoft.Authorization/roleAssignments@2018-01-01-preview' = {
-  name: guid(resourceGroup().id, iotHubUserAssignedIdentity.name, 'exitcam')
-  properties: {
-    principalId: iotHubUserAssignedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(subscription().subscriptionId, 'Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')  
-  }
-  scope: eventHubExitCam
-}
-
 var eventHubNamespaceEndpointUri = 'sb://${eventHubNamespace.name}.servicebus.windows.net'
 
 resource iotHub 'Microsoft.Devices/IotHubs@2021-03-31' = {
@@ -109,36 +86,21 @@ resource iotHub 'Microsoft.Devices/IotHubs@2021-03-31' = {
     name: 'B1'
     capacity: 1
   }
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${iotHubUserAssignedIdentity.id}': {}
-    }
-  }
   properties: {
-    //minTlsVersion: '1.2'
     routing: {
       endpoints: {
         eventHubs: [
           {
             name: 'entrycam'
-            authenticationType: 'identityBased'
-            identity: {
-              userAssignedIdentity: iotHubUserAssignedIdentity.id
-            }
-            endpointUri: eventHubNamespaceEndpointUri
-            entityPath: eventHubEntryCamName
+            authenticationType: 'keyBased'
+            connectionString: listKeys(eventHubEntryCamListenAuthorizationRule.id, eventHubEntryCamListenAuthorizationRule.apiVersion).primaryConnectionString
             subscriptionId: subscription().subscriptionId
             resourceGroup: resourceGroup().name
           }
           {
             name: 'exitcam'
-            authenticationType: 'identityBased'
-            identity: {
-              userAssignedIdentity: iotHubUserAssignedIdentity.id
-            }
-            endpointUri: eventHubNamespaceEndpointUri
-            entityPath: eventHubExitCamName
+            authenticationType: 'keyBased'
+            connectionString: listKeys(eventHubExitCamListenAuthorizationRule.id, eventHubExitCamListenAuthorizationRule.apiVersion).primaryConnectionString
             subscriptionId: subscription().subscriptionId
             resourceGroup: resourceGroup().name
           }
@@ -166,10 +128,6 @@ resource iotHub 'Microsoft.Devices/IotHubs@2021-03-31' = {
       ]
     }
   }
-  dependsOn: [
-    iotHubUserEventHubEntryCamEventHubDataSenderRoleAssignment
-    iotHubUserEventHubExitCamEventHubDataSenderRoleAssignment
-  ]
 }
 
 output iotHubName string = iotHub.name

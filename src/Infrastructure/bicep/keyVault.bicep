@@ -10,6 +10,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-04-01-preview' = {
     }
     tenantId: subscription().tenantId
     enableRbacAuthorization: false
+    accessPolicies: []
   }  
 }
 
