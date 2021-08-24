@@ -90,4 +90,19 @@
       }
     }
   }
+
+  public bool IsMonitoring
+  {
+    get
+    {
+      if (!timer.Enabled)
+      {
+        return false;
+      }
+      else
+      {
+        return true;
+      }
+    }
+  }
 }

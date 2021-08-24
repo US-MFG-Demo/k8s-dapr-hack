@@ -7,17 +7,16 @@
 
 <FluentButton @onclick="ToggleMonitoring">@MonitoringButtonText</FluentButton>
 <hr>
-<LogViewer @ref=@logViewer HubConnection=@hubConnection ServiceName="vehicle-registration-service"></LogViewer>
+<LogViewer @ref=@logViewer HubConnection=@hubConnection ServiceName=@Configuration["Kubernetes:VehicleRegistrationServiceName"]></LogViewer>
 
 @code {
   private LogViewer logViewer;
   private HubConnection hubConnection;
-  private const string VEHICLE_REGISTRATION_SERVICE_HUB_URL = "/vehicleregistrationhub";
 
   protected override void OnInitialized()
   {
     hubConnection = new HubConnectionBuilder()
-    .WithUrl(NavigationManager.ToAbsoluteUri(VEHICLE_REGISTRATION_SERVICE_HUB_URL))
+    .WithUrl(NavigationManager.ToAbsoluteUri(Configuration["Kubernetes:VehicleRegistrationServiceName"]))
     .Build();
   }
   private void ToggleMonitoring()

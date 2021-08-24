@@ -12,12 +12,11 @@
 @code {
   private LogViewer logViewer;
   private HubConnection hubConnection;
-  private const string FINE_COLLECTION_SERVICE_HUB_URL = "/finecollectionhub";
 
   protected override void OnInitialized()
   {
     hubConnection = new HubConnectionBuilder()
-    .WithUrl(NavigationManager.ToAbsoluteUri(FINE_COLLECTION_SERVICE_HUB_URL))
+    .WithUrl(NavigationManager.ToAbsoluteUri(Configuration["Hubs:FineCollectionServiceHubPath"]))
     .Build();
   }
   private void ToggleMonitoring()

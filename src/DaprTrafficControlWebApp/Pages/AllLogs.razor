@@ -1,0 +1,62 @@
+@page "/alllogs"
+@using DaprTrafficControlWebApp.Shared
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@inject NavigationManager NavigationManager
+
+<FluentButton @onclick="ToggleMonitoring">@MonitoringButtonText</FluentButton>
+<hr>
+<LogViewer @ref=@simulationLogViewer HubConnection=@simulationHubConnection ServiceName=@Configuration["Kubernetes:SimulationServiceName"]></LogViewer>
+<LogViewer @ref=@fineCollectionLogViewer HubConnection=@fineCollectionHubConnection ServiceName=@Configuration["Kubernetes:FineCollectionServiceName"]></LogViewer>
+<LogViewer @ref=@trafficControlLogViewer HubConnection=@trafficControlHubConnection ServiceName=@Configuration["Kubernetes:TrafficControlServiceName"]></LogViewer>
+<LogViewer @ref=@vehicleRegistrationLogViewer HubConnection=@vehicleRegistrationHubConnection ServiceName=@Configuration["Kubernetes:VehicleRegistrationServiceName"]></LogViewer>
+
+@code {
+  private LogViewer simulationLogViewer;
+  private LogViewer fineCollectionLogViewer;
+  private LogViewer trafficControlLogViewer;
+  private LogViewer vehicleRegistrationLogViewer;
+  private HubConnection simulationHubConnection;
+  private HubConnection fineCollectionHubConnection;
+  private HubConnection trafficControlHubConnection;
+  private HubConnection vehicleRegistrationHubConnection;
+
+  protected override void OnInitialized()
+  {
+    simulationHubConnection = new HubConnectionBuilder()
+    .WithUrl(NavigationManager.ToAbsoluteUri(Configuration["Hubs:SimulationServiceHubPath"]))
+    .Build();
+    fineCollectionHubConnection = new HubConnectionBuilder()
+    .WithUrl(NavigationManager.ToAbsoluteUri(Configuration["Hubs:FineCollectionServiceHubPath"]))
+    .Build();
+    trafficControlHubConnection = new HubConnectionBuilder()
+    .WithUrl(NavigationManager.ToAbsoluteUri(Configuration["Hubs:TrafficControlServiceHubPath"]))
+    .Build();
+    vehicleRegistrationHubConnection = new HubConnectionBuilder()
+    .WithUrl(NavigationManager.ToAbsoluteUri(Configuration["Hubs:VehicleRegistrationServiceHubPath"]))
+    .Build();
+  }
+  private void ToggleMonitoring()
+  {
+    simulationLogViewer.ToggleMonitoring();
+    fineCollectionLogViewer.ToggleMonitoring();
+    trafficControlLogViewer.ToggleMonitoring();
+    vehicleRegistrationLogViewer.ToggleMonitoring();
+  }
+
+  private string MonitoringButtonText
+  {
+    get 
+    {
+      if(simulationLogViewer.IsMonitoring && fineCollectionLogViewer.IsMonitoring && trafficControlLogViewer.IsMonitoring && vehicleRegistrationLogViewer.IsMonitoring)
+      {
+        return "Stop Monitoring";
+      }
+      else
+      {
+        return "Start Monitoring";
+      }
+    }
+  }
+}

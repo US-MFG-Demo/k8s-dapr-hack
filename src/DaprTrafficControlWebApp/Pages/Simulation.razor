@@ -19,7 +19,7 @@
   protected override void OnInitialized()
   {
     hubConnection = new HubConnectionBuilder()
-    .WithUrl(NavigationManager.ToAbsoluteUri(Configuration["Kubernetes:SimulationServiceHubPath"]))
+    .WithUrl(NavigationManager.ToAbsoluteUri(Configuration["Hubs:SimulationServiceHubPath"]))
     .Build();
 
     hubConnection.On<bool>("ReceiveIsSimulating", (message) =>
