@@ -6,23 +6,24 @@ using System.Threading.Tasks;
 using DaprTrafficControlWebApp.Data;
 using k8s;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Rest;
 
 namespace DaprTrafficControlWebApp.Server.Hubs
 {
   public class LogMonitoringHub : KubernetesHub
   {
-    public LogMonitoringHub(string namespaceName) : base(namespaceName) {}
+    public LogMonitoringHub(IConfiguration configuration) : base(configuration) {}
     public async Task StartMonitoring(int sinceSeconds, string serviceName)
     {
       IHubCallerClients clients = Clients;
-      var pods = await client.ListNamespacedPodAsync(namespaceName);
+      var pods = await iKubernetesClient.ListNamespacedPodAsync(namespaceName);
 
       foreach (var pod in pods.Items)
       {
         if (pod.Metadata.Name.Contains(serviceName) && pod.Status.Phase == "Running")
         {
-          var response = await client.ReadNamespacedPodLogWithHttpMessagesAsync(
+          var response = await iKubernetesClient.ReadNamespacedPodLogWithHttpMessagesAsync(
             name: pod.Metadata.Name,
             namespaceParameter: pod.Metadata.NamespaceProperty,
             container: serviceName,

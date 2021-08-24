@@ -1,11 +1,13 @@
 @page "/finecollectionservice"
 @using DaprTrafficControlWebApp.Shared
 @using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
 
 <FluentButton @onclick="ToggleMonitoring">@MonitoringButtonText</FluentButton>
 <hr>
-<LogViewer @ref=@logViewer HubConnection=@hubConnection ServiceName="fine-collection-service"></LogViewer>
+<LogViewer @ref=@logViewer HubConnection=@hubConnection ServiceName=@Configuration["Kubernetes:FineCollectionServiceName"]></LogViewer>
 
 @code {
   private LogViewer logViewer;

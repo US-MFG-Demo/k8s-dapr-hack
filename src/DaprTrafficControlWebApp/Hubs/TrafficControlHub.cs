@@ -1,7 +1,9 @@
+using Microsoft.Extensions.Configuration;
+
 namespace DaprTrafficControlWebApp.Server.Hubs
 {
   public class TrafficControlHub : LogMonitoringHub
   {
-    public TrafficControlHub() : base("dapr-trafficcontrol") {}
+    public TrafficControlHub(IConfiguration configuration) : base(configuration) {}
   }
 }

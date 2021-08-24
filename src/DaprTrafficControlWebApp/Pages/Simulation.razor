@@ -1,6 +1,8 @@
 @using DaprTrafficControlWebApp.Shared
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.Timers
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
 
 <FluentButton @onclick="ToggleSimulating">@SimulateButtonText</FluentButton>
@@ -13,12 +15,11 @@
   private bool isSimulating = false;
   private LogViewer logViewer;
   private string SimulateButtonText { get; set; }
-  private const string SIMULATION_HUB_URL = "/simulationhub";
 
   protected override void OnInitialized()
   {
     hubConnection = new HubConnectionBuilder()
-    .WithUrl(NavigationManager.ToAbsoluteUri(SIMULATION_HUB_URL))
+    .WithUrl(NavigationManager.ToAbsoluteUri(Configuration["Kubernetes:SimulationServiceHubPath"]))
     .Build();
 
     hubConnection.On<bool>("ReceiveIsSimulating", (message) =>

@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
-//using DaprTrafficControlWebApp.Data;
 using DaprTrafficControlWebApp.Server.Hubs;
 
 namespace DaprTrafficControlWebApp
@@ -30,7 +29,6 @@ namespace DaprTrafficControlWebApp
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            //services.AddSingleton<WeatherForecastService>();
             services.AddResponseCompression(opts => {
               opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                 new[] { "application/octet-stream" });
@@ -61,10 +59,10 @@ namespace DaprTrafficControlWebApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();
-                endpoints.MapHub<SimulationHub>("/simulationhub");
-                endpoints.MapHub<TrafficControlHub>("/trafficcontrolhub");
-                endpoints.MapHub<VehicleRegistrationHub>("/vehicleregistrationhub");
-                endpoints.MapHub<FineCollectionHub>("/finecollectionhub");
+                endpoints.MapHub<SimulationHub>(Configuration["Hubs:SimulationServiceHubPath"]);
+                endpoints.MapHub<TrafficControlHub>(Configuration["Hubs:FineCollectionServiceHubPath"]);
+                endpoints.MapHub<VehicleRegistrationHub>(Configuration["Hubs:TrafficControlServiceHubPath"]);
+                endpoints.MapHub<FineCollectionHub>(Configuration["Hubs:VehicleRegistrationServiceHubPath"]);
                 endpoints.MapFallbackToPage("/_Host");
             });
         }

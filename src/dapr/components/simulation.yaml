@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: simulation
-        image: crdaprusscdemo.azurecr.io/simulation:Assignment08
+        image: crdaprusscdemo.azurecr.io/simulation:assignment08
         imagePullPolicy: Always
         resources:
           requests:

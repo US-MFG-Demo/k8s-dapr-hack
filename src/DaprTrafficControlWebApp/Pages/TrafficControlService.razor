@@ -1,7 +1,9 @@
 @page "/trafficcontrolservice"
 @using DaprTrafficControlWebApp.Shared
-@inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@inject NavigationManager NavigationManager
 
 <FluentButton @onclick="ToggleMonitoring">@MonitoringButtonText</FluentButton>
 <hr>

@@ -3,13 +3,13 @@ using k8s;
 using k8s.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 
 namespace DaprTrafficControlWebApp.Server.Hubs
 {
   public class SimulationHub : LogMonitoringHub
   {
-    const string SERVICE_NAME = "simulation";
-    public SimulationHub() : base("dapr-trafficcontrol")
+    public SimulationHub(IConfiguration configuration) : base(configuration)
     {
     }
 
@@ -32,9 +32,9 @@ namespace DaprTrafficControlWebApp.Server.Hubs
       var jsonPatch = new JsonPatchDocument<V1Scale>();
       jsonPatch.Replace(e => e.Spec.Replicas, replicas);
       var patch = new V1Patch(jsonPatch, V1Patch.PatchType.JsonPatch);
-      await client.PatchNamespacedDeploymentScaleAsync(
+      await iKubernetesClient.PatchNamespacedDeploymentScaleAsync(
         body: patch,
-        name: SERVICE_NAME,
+        name: configuration["Kubernetes:SimulationServiceName"],
         namespaceParameter: namespaceName
       );
     }
@@ -43,10 +43,10 @@ namespace DaprTrafficControlWebApp.Server.Hubs
     {
       IHubCallerClients clients = Clients;
 
-      var pods = await client.ListNamespacedPodAsync(namespaceName);
+      var pods = await iKubernetesClient.ListNamespacedPodAsync(namespaceName);
       foreach (var pod in pods.Items)
       {
-        if (pod.Metadata.Name.Contains(SERVICE_NAME) && pod.Status.Phase == "Running")
+        if (pod.Metadata.Name.Contains(configuration["Kubernetes:SimulationServiceName"]) && pod.Status.Phase == "Running")
         {
           await clients.All.SendAsync("ReceiveIsSimulating", true);
           return;

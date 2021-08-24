@@ -1,19 +1,23 @@
 using k8s;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 
 namespace DaprTrafficControlWebApp.Server.Hubs
 {
   public class KubernetesHub : Hub
   {
-    KubernetesClientConfiguration config;
-    protected IKubernetes client;
+    KubernetesClientConfiguration kubernetesClientConfiguration;
+    protected IKubernetes iKubernetesClient;
     protected string namespaceName;
 
-    public KubernetesHub(string namespaceName)
+    protected IConfiguration configuration;
+
+    public KubernetesHub(IConfiguration configuration)
     {
-      config = KubernetesClientConfiguration.BuildDefaultConfig();
-      client = new Kubernetes(config);
-      this.namespaceName = namespaceName;
+      this.configuration = configuration;
+      kubernetesClientConfiguration = KubernetesClientConfiguration.BuildDefaultConfig();
+      iKubernetesClient = new Kubernetes(kubernetesClientConfiguration);
+      namespaceName = this.configuration["Kubernetes:DaprNamespace"];
     }
   }
 }

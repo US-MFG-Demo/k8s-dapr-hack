@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: traffic-control-web-app
-        image: crdaprusscdemo.azurecr.io/traffic-control-web-app:latest
+        image: crdaprusscdemo.azurecr.io/traffic-control-web-app:assignment08
         imagePullPolicy: Always
         ports:
         - containerPort: 80
