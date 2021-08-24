@@ -41,6 +41,7 @@ resource eventHubEntryCamListenAuthorizationRule 'Microsoft.EventHub/namespaces/
   properties: {
     rights: [
       'Listen'
+      'Send'
     ]
   }
 }
@@ -73,6 +74,7 @@ resource eventHubExitCamListenAuthorizationRule 'Microsoft.EventHub/namespaces/e
   properties: {
     rights: [
       'Listen'
+      'Send'
     ]
   }
 }
