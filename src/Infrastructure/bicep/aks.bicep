@@ -1,7 +1,6 @@
 param longName string
 param adminUsername string
 param publicSSHKey string
-param keyVaultName string
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
   name: 'la-${longName}'
