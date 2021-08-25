@@ -35,6 +35,8 @@ spec:
         ports:
         - containerPort: 80
       restartPolicy: Always
+      imagePullSecrets:
+      - name: dapr-acr-pull-secret
   selector:
     matchLabels:
       app: traffic-control-web-app
