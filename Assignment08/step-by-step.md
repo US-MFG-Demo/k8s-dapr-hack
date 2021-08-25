@@ -121,6 +121,24 @@ Now that your container images have been uploaded to the Azure Container Registr
     
 1.  Repeat these steps for the `TrafficControlService` and the `VehicleRegistrationService`.
 
+1.  Grant your AKS instance access to pull images from your Azure Container Registry.
+
+    Create a Kubernetes **secret** to store the credentials in. Update the **<container-registry-name>** and **<container-registry-password>**. You can find this in the output from the Azure Bicep deployment `containerRegistryAdminPassword` or by running the following code.
+
+    ```shell
+    az acr credential show -n <container-registry-name>
+    ```
+
+    ```shell
+    kubectl create secret docker-registry dapr-acr-pull-secret \
+      --namespace dapr-trafficcontrol \
+      --docker-server=<container-registry-name>.azurecr.io \
+      --docker-username=<container-registry-name> \
+      --docker-password=<service-principal-password>
+    ```
+
+    > IMPORTANT: The Azure Container Registry has the **admin** account enabled to make this demo easier to deploy (doesn't require the deployer to have Owner access to the subscription or resource group the Azure resources are deployed to). **This is not best practice!** In a production deployment, use a managed identity or service principal to authenticate between the AKS cluster & the ACR. See the [documentation](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-authentication?tabs=azure-cli) for more about the options and how to set up.
+
 1. 	Deploy your new services to AKS. Navigate to the `src/k8s/components` directory and run the following:
 
     ```shell

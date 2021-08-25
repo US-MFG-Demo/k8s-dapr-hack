@@ -69,7 +69,8 @@ spec:
           periodSeconds: 10
           timeoutSeconds : 5
           failureThreshold: 3
-
+      imagePullSecrets:
+      - name: dapr-acr-pull-secret
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
