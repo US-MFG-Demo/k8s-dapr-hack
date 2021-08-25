@@ -77,7 +77,7 @@ Next, you'll create the Azure resources for the subsequent assignments using [Az
    - If prompted for a file name, leave the entry blank, and press enter.
    - If prompted for a passphrase, leave the entry blank, and press enter.
    
-   Once complete, you'll find two SSH key files in the following directory: `c:\windows\system32\config\systemprofile\.ssh`. Right-click on the `id_rsa` file and open with Notepad. Copy the entire contents of the file which is the public key. You'll need it to configure the parameter file in an upcoming step.
+   Once complete, you'll find two SSH key files in the following directory: `%USERPROFILE%\.ssh`. Right-click on the `id_rsa` file and open with Notepad. Copy the entire contents of the file which is the public key. You'll need it to configure the parameter file in an upcoming step.
     
 1. Later in this workshop, you'll deploy the completed application into a Azure Kubernetes cluster. You'll use [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) to access cloud resources securely with Azure Active Directory. You'll need to run the following commands to enable this feature before you create the Kubernetes cluster.
 
