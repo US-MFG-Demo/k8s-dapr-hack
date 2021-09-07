@@ -5,7 +5,6 @@ param adminUsername string
 param publicSSHKey string
 
 var longName = '${appName}-${environment}'
-var location = region
 
 module keyVaultModule 'keyVault.bicep' = {
   name: 'keyVaultDeploy'  
@@ -41,7 +40,6 @@ module aksModule 'aks.bicep' = {
     longName: longName
     adminUsername: adminUsername
     publicSSHKey: publicSSHKey
-    keyVaultName: keyVaultModule.outputs.keyVaultName
   }  
 }
 

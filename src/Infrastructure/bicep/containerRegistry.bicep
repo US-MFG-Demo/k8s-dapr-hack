@@ -6,7 +6,11 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2020-11-01-pr
   sku: {
     name: 'Basic'
   }
+  properties: {
+    adminUserEnabled: true
+  }
 }
 
 output containerRegistryName string = containerRegistry.name
 output containerRegistryLoginServerName string = containerRegistry.properties.loginServer
+output containerRegistryAdminPassword string = listCredentials(containerRegistry.id, containerRegistry.apiVersion).passwords[0].value
