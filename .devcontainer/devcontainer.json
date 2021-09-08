@@ -1,0 +1,32 @@
+{
+  "name": "k8s-dapr-hack",
+  "remoteUser": "vscode",
+  "overrideCommand": false,
+  "forwardPorts": [
+    6000,
+    6001,
+    6002,
+    3600,
+    3601,
+    3602,
+    60000,
+    60001,
+    60002
+  ],
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "hostRequirements": {
+    "cpus": 4
+  },
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
+  "extensions": [
+      "ms-dotnettools.csharp",
+      "humao.rest-client",
+      "ms-azuretools.vscode-bicep"
+  ],
+  "onCreateCommand": "/bin/bash ./.devcontainer/on-create.sh",
+  "postCreateCommand": ""
+}
