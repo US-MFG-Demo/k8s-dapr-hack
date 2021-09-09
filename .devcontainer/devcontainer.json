@@ -1,6 +1,5 @@
 {
   "name": "k8s-dapr-hack",
-  "remoteUser": "vscode",
   "overrideCommand": false,
   "forwardPorts": [
     6000,
@@ -20,13 +19,13 @@
     "cpus": 4
   },
   "settings": {
-    "terminal.integrated.defaultProfile.linux": "bash"
+    "terminal.integrated.defaultProfile.linux": "/bin/bash"
   },
   "extensions": [
       "ms-dotnettools.csharp",
       "humao.rest-client",
       "ms-azuretools.vscode-bicep"
   ],
-  "onCreateCommand": "/bin/bash ./.devcontainer/on-create.sh",
+  "onCreateCommand": "",
   "postCreateCommand": ""
 }
