@@ -19,7 +19,7 @@
     "cpus": 4
   },
   "settings": {
-    "terminal.integrated.defaultProfile.linux": "/bin/bash"
+    "terminal.integrated.defaultProfile.linux": "bash"
   },
   "extensions": [
       "ms-dotnettools.csharp",
@@ -27,5 +27,8 @@
       "ms-azuretools.vscode-bicep"
   ],
   "onCreateCommand": "",
-  "postCreateCommand": ""
+  "postCreateCommand": ".devcontainer/post-create.sh",
+  "runArgs": [
+   "--privileged" 
+  ]
 }
