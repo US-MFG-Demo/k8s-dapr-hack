@@ -2,4 +2,4 @@
 
 k3d cluster create dapr-trafficcontrol
 
-dapr init
+dapr init -k
